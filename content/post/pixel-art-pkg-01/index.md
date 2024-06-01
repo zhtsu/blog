@@ -19,4 +19,3 @@ categories:
 | ![backpack-boy.png](backpack-boy.png) | ![mr.mouse.png](mr.mouse.png) | ![rabbit.png](rabbit.png) | ![Placeholder](placeholder.png) |
 | ------------------------------------- | ----------------------------- | ------------------------- | ------------------------------- |
 
-

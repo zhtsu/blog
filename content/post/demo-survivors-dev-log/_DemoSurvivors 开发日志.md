@@ -6,7 +6,6 @@ tags:
     - GameDev
 categories:
     - Dev
-    - Log
 ---
 
 ## 放在前面

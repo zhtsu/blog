@@ -1,5 +1,5 @@
 ---
-title: ACG
+title: Essay
 image: tsos.jpg
 
 # Badge style
