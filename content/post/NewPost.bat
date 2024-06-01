@@ -1,1 +1,1 @@
-copy template.md NoTitled.md
+copy template NoTitled.md
