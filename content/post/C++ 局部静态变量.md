@@ -2,7 +2,7 @@
 title: C++ 局部静态变量
 date: 2022-07-09
 tags: 
-    - CPP
+    - C++
 categories:
     - Dev
 ---
