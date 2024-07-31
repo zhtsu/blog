@@ -1,5 +1,5 @@
 ---
-title: 观《Another》后有感
+title: 《Another》观后感
 date: 2024-06-01
 tags: 
     - ACG

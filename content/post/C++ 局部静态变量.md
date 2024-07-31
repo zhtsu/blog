@@ -1,5 +1,5 @@
 ---
-title: CPP 局部静态变量
+title: C++ 局部静态变量
 date: 2022-07-09
 tags: 
     - CPP
@@ -46,7 +46,6 @@ void PrintCount()
 在变量面前加了 static 关键字修饰居然会变成这样，这难道不是和以下代码一样么？
 
 ```cpp
-
 int count = 0;
 
 void PrintCount()
