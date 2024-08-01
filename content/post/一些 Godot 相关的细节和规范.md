@@ -36,5 +36,7 @@ var variable : type:
 - 导出到模拟器运行时闪退
   
   解决方法：将渲染模式改为兼容模式（Compatibility）
+  
+- 打包后的安卓程序无法正常获取安卓插件实例
 
-
+  可能的原因：Godot 中的安卓导出插件的 _get_name 方法与安卓插件的 getPluginName 的返回值不同
