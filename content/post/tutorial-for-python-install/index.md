@@ -1,6 +1,7 @@
 ---
 title: Python 环境配置教程
 date: 2021-04-28
+image: cover-05.png
 tags: 
     - Python
 categories:

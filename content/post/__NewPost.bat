@@ -1,1 +1,2 @@
-copy template NoTitled.md
+mkdir NoTitled
+copy template NoTitled/index.md

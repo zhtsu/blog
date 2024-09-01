@@ -1,6 +1,7 @@
 ---
 title: 像素画合集（一）
 date: 2022-12-08
+image: cover-08.png
 description: 截止至 2023.09.12 完成的像素画
 tags: 
     - PixelArt
