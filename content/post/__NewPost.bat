@@ -1,2 +1,2 @@
 mkdir NoTitled
-copy template NoTitled/index.md
+call copy "./template" "./NoTitled/index.md"
