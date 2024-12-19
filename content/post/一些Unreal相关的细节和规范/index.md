@@ -1,7 +1,7 @@
 ---
 title: 一些Unreal相关的细节和规范
 date: 2024-12-19
-image: cover-01.png
+image: geass.png
 tags: 
     - Unreal
 categories:
