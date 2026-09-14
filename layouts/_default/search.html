@@ -6,7 +6,7 @@
         <svg class="icon icon-xs" aria-hidden="true"><use href="#i-search"></use></svg>
         搜索
       </h1>
-      {{- with partial "page-body.html" $ }}<div class="list-desc">{{ . }}</div>{{ end }}
+      {{- with partial "page-body.html" $ }}<div class="list-desc">{{ . | plainify }}</div>{{ end }}
     </header>
 
     <form class="search-form" id="search-form" role="search" action="{{ .RelPermalink }}" method="get">

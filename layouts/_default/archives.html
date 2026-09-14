@@ -9,7 +9,9 @@
         <svg class="icon icon-xs" aria-hidden="true"><use href="#i-calendar"></use></svg>
         归档
       </h1>
-      {{- with partial "page-body.html" $ }}<div class="list-desc">{{ . }}</div>{{ end }}
+      {{- /* 这里只想要一句话说明，所以取纯文本；
+             直接 {{ . }} 会把 <p> 转义成 &lt;p&gt; 当字面文字显示出来 */ -}}
+      {{- with partial "page-body.html" $ }}<div class="list-desc">{{ . | plainify }}</div>{{ end }}
       <p class="list-count">共 {{ len $pages }} 篇</p>
     </header>
 

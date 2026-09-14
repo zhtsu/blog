@@ -65,6 +65,13 @@ showCover = true
   name = "GOOBLOG"
   url = "https://www.blog.googookuki.cn/#/home"
 
+# ---- 侧栏：推荐文章 ----
+# 用标签驱动：给文章 front matter 的 tags 加上下面这个标签名，
+# 它就会进侧栏的「推荐文章」卡片（按日期倒序，最多 5 条）。
+# 一篇都没打该标签时，卡片回落显示「最新文章」。
+[recommend]
+  tag = "推荐文章"
+
 # ---- 暗色模式 ----
 [darkMode]
   enabled = true

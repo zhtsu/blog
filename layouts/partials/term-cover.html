@@ -1,0 +1,22 @@
+{{- /* 分类 / 标签词条页的头图。
+       数据来自 content/categories/<name>/_index.md 的 image:，
+       它是该目录下的页面资源（如 sakuya.jpg）。
+       参数：page（词条页 page） */ -}}
+{{- $page := . -}}
+{{- $name := $page.Params.image -}}
+{{- if $name -}}
+  {{- $src := "" -}}
+  {{- if or (hasPrefix $name "http://") (hasPrefix $name "https://") -}}
+    {{- $src = $name -}}
+  {{- else -}}
+    {{- with $page.Resources.GetMatch $name -}}
+      {{- $src = .RelPermalink -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $src -}}
+  <div class="term-cover">
+    <img src="{{ . }}" alt="{{ $page.Title }}" loading="lazy" decoding="async">
+    <span class="term-cover-title">{{ $page.Title }}</span>
+  </div>
+  {{- end -}}
+{{- end -}}

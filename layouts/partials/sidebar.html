@@ -50,21 +50,25 @@
     </ul>
   </div>
 
-  {{- /* 3. 最新文章：若存在 pinned / recommend 标记则改称「推荐文章」 */ -}}
-  {{- $pinned := where site.RegularPages "Params.pinned" true -}}
-  {{- $recommend := where site.RegularPages "Params.recommend" true -}}
-  {{- $picks := $pinned | append $recommend | uniq -}}
-  {{- $isPicks := gt (len $picks) 0 -}}
-  {{- if not $isPicks }}
+  {{- /* 3. 推荐文章：用标签驱动。
+         在 params.toml 的 [recommend] tag 里指定标签名（默认「推荐文章」），
+         给文章 front matter 的 tags 加上这个标签，它就会出现在这里。
+         一篇都没打该标签时，回落显示最新文章，卡片不会空着。 */ -}}
+  {{- $recTag := site.Params.recommend.tag | default "推荐文章" -}}
+  {{- $recommended := where site.RegularPages "Params.tags" "intersect" (slice $recTag) -}}
+  {{- $recommended = $recommended.ByDate.Reverse -}}
+  {{- $isRec := gt (len $recommended) 0 -}}
+  {{- $picks := $recommended -}}
+  {{- if not $isRec }}
     {{- $picks = first 5 (where site.RegularPages "Section" "post") -}}
   {{- end -}}
   {{- if $picks }}
   <div class="card">
     <ul class="nav nav-pills nav-stacked card-list">
       <li role="presentation" class="disabled">
-        <a class="card-title" href="{{ "post/" | relURL }}">
-          {{- if $isPicks }}
-          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-pin"></use></svg> 推荐文章
+        <a class="card-title" href="{{ if $isRec }}{{ (printf "tags/%s/" (urlize $recTag)) | relURL }}{{ else }}{{ "post/" | relURL }}{{ end }}">
+          {{- if $isRec }}
+          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-star"></use></svg> 推荐文章
           {{- else }}
           <svg class="icon icon-xs" aria-hidden="true"><use href="#i-clock"></use></svg> 最新文章
           {{- end }}

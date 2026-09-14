@@ -18,7 +18,8 @@
         {{ end -}}
         {{ .Title }}
       </h1>
-      {{- with partial "page-body.html" $ }}<div class="list-desc">{{ . }}</div>{{ end }}
+      {{- /* 取纯文本：这里只要一句说明，直接 {{ . }} 会把 <p> 转义成字面文字 */ -}}
+      {{- with partial "page-body.html" $ }}<div class="list-desc">{{ . | plainify }}</div>{{ end }}
       <p class="list-count">
         {{- if $isTaxonomy -}}
           {{ len .Pages }} 个{{ if eq .Data.Plural "tags" }}标签{{ else if eq .Data.Plural "categories" }}分类{{ else }}词条{{ end }}
@@ -27,6 +28,9 @@
         {{- end -}}
       </p>
     </header>
+
+    {{- /* 词条页头图：数据来自 content/categories/<name>/_index.md 的 image: */ -}}
+    {{- if $isTerm }}{{ partial "term-cover.html" . }}{{ end }}
 
     {{- if $isTaxonomy }}
       {{- /* 标签 / 分类总览：把词条渲染成卡片网格，而不是空的列表 */ -}}
