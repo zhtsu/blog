@@ -1,6 +1,6 @@
-{{/* 右侧栏卡片组。
-     顺序固定为：分类 → 标签 → 最新文章 → 友情链接（→ 其它外链）。
-     原站是 JS 硬编码，这里全部由 Hugo 数据生成。 */}}
+{{/* 右侧栏卡片组，只保留 分类 → 标签。
+     最新文章与友情链接按要求移除（数据仍在 params.toml 的 [[links]] 里，
+     想恢复只需把对应卡片加回来）。 */}}
 <aside class="aside-box">
 
   {{- /* 1. 分类 */ -}}
@@ -49,56 +49,5 @@
       {{- end }}
     </ul>
   </div>
-
-  {{- /* 3. 最新文章：若存在 pinned / recommend 标记则改称「推荐文章」 */ -}}
-  {{- $pinned := where site.RegularPages "Params.pinned" true -}}
-  {{- $recommend := where site.RegularPages "Params.recommend" true -}}
-  {{- $picks := $pinned | append $recommend | uniq -}}
-  {{- $isPicks := gt (len $picks) 0 -}}
-  {{- if not $isPicks }}
-    {{- $picks = first 5 (where site.RegularPages "Section" "post") -}}
-  {{- end -}}
-  {{- if $picks }}
-  <div class="card">
-    <ul class="nav nav-pills nav-stacked card-list">
-      <li role="presentation" class="disabled">
-        <a class="card-title" href="{{ "post/" | relURL }}">
-          {{- if $isPicks }}
-          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-pin"></use></svg> 推荐文章
-          {{- else }}
-          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-clock"></use></svg> 最新文章
-          {{- end }}
-        </a>
-      </li>
-      {{- range first 5 $picks }}
-      <li role="presentation">
-        <a class="card-link" href="{{ .RelPermalink }}" title="{{ .Title }}">
-          <span class="card-link-text">{{ .Title }}</span>
-        </a>
-      </li>
-      {{- end }}
-    </ul>
-  </div>
-  {{- end }}
-
-  {{- /* 4. 友情链接 */ -}}
-  {{- with site.Params.links }}
-  <div class="card">
-    <ul class="nav nav-pills nav-stacked card-list">
-      <li role="presentation" class="disabled">
-        <a class="card-title" href="#">
-          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-link"></use></svg> 友情链接
-        </a>
-      </li>
-      {{- range . }}
-      <li role="presentation">
-        <a class="card-link" href="{{ .url }}" target="_blank" rel="noopener noreferrer">
-          <span class="card-link-text">{{ .name }}</span>
-        </a>
-      </li>
-      {{- end }}
-    </ul>
-  </div>
-  {{- end }}
 
 </aside>

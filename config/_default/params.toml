@@ -58,7 +58,9 @@ showCover = true
 # 已移除：原来照抄了原站 Bootstrap 的「其他」下拉，交互只是默认态。
 # 需要外链入口的话放侧栏 links，或直接加进上面的 [[main]]。
 
-# ---- 侧栏：友情链接（沿用 main 的 content/page/links）----
+# ---- 侧栏：友情链接 ----
+# 侧栏的「友情链接」卡片已按要求移除，数据先留在这里。
+# 想恢复：在 partials/sidebar.html 末尾加回一张卡片并 range site.Params.links。
 [[links]]
   name = "GOOBLOG"
   url = "https://www.blog.googookuki.cn/#/home"
