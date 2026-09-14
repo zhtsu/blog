@@ -11,6 +11,28 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+
+  /* 始终预留滚动条的位置。
+     归档页短、主页长，两页之间切换时滚动条会一会儿有一会儿没有，
+     内容随之横向跳动——这就是明显的布局偏移（CLS）。
+     stable 只留沟槽、不画轨道，所以不会像 overflow-y: scroll
+     那样在短页面上多出一条空的轨道。 */
+  scrollbar-gutter: stable;
+}
+
+/* 老浏览器不认 scrollbar-gutter：退回到常驻滚动条。
+   视觉上多一条空轨道，但至少不会跳动。 */
+@supports not (scrollbar-gutter: stable) {
+  html {
+    overflow-y: scroll;
+  }
+}
+
+/* 系统设置减少动效时，平滑滚动本身也是一种动效 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* 页面底色：对齐原站 .blog { background: #dadada } */

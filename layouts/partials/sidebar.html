@@ -48,6 +48,24 @@
         <li role="presentation" class="empty-hint"><span>还没有标签</span></li>
       {{- end }}
     </ul>
+  {{- /* 3. 友情链接 */ -}}
+  {{- with site.Params.links }}
+  <div class="card">
+    <ul class="nav nav-pills nav-stacked card-list">
+      <li role="presentation" class="disabled">
+        <a class="card-title" href="#">
+          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-link"></use></svg> 友情链接
+        </a>
+      </li>
+      {{- range . }}
+      <li role="presentation">
+        <a class="card-link" href="{{ .url }}" target="_blank" rel="noopener noreferrer">
+          <span class="card-link-text">{{ .name }}</span>
+        </a>
+      </li>
+      {{- end }}
+    </ul>
   </div>
+  {{- end }}
 
 </aside>
