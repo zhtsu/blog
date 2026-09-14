@@ -101,24 +101,4 @@
   </div>
   {{- end }}
 
-  {{- /* 5. 其它外链：原本挤在顶栏「其他」下拉里，去掉下拉后移到侧栏 */ -}}
-  {{- with site.Params.socials }}
-  <div class="card">
-    <ul class="nav nav-pills nav-stacked card-list">
-      <li role="presentation" class="disabled">
-        <a class="card-title" href="#">
-          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-user"></use></svg> 其它
-        </a>
-      </li>
-      {{- range . }}
-      <li role="presentation">
-        <a class="card-link" href="{{ .url }}" target="_blank" rel="noopener noreferrer">
-          <span class="card-link-text">{{ .name }}</span>
-        </a>
-      </li>
-      {{- end }}
-    </ul>
-  </div>
-  {{- end }}
-
 </aside>

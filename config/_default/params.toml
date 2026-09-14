@@ -63,23 +63,6 @@ showCover = true
   name = "GOOBLOG"
   url = "https://www.blog.googookuki.cn/#/home"
 
-# ---- 侧栏：其它外链（原本是顶栏「其他」下拉，下拉去掉后移到这里）----
-[[socials]]
-  name = "GitHub"
-  url = "https://github.com/zhtsu"
-
-[[socials]]
-  name = "Gitee"
-  url = "https://gitee.com/zhtsu"
-
-[[socials]]
-  name = "CSDN"
-  url = "https://blog.csdn.net/weixin_45711556"
-
-[[socials]]
-  name = "Bilibili"
-  url = "https://space.bilibili.com/456214277"
-
 # ---- 暗色模式 ----
 [darkMode]
   enabled = true

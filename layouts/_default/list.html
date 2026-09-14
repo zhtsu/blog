@@ -18,7 +18,7 @@
         {{ end -}}
         {{ .Title }}
       </h1>
-      {{- with .Content }}<div class="list-desc">{{ . }}</div>{{ end }}
+      {{- with partial "page-body.html" $ }}<div class="list-desc">{{ . }}</div>{{ end }}
       <p class="list-count">
         {{- if $isTaxonomy -}}
           {{ len .Pages }} 个{{ if eq .Data.Plural "tags" }}标签{{ else if eq .Data.Plural "categories" }}分类{{ else }}词条{{ end }}
@@ -38,7 +38,7 @@
             <span class="term-name">{{ .Title }}</span>
             <span class="badge">{{ len .Pages }}</span>
           </a>
-          {{- with .Content }}<p class="term-desc">{{ . | plainify | truncate 60 }}</p>{{ end }}
+          {{- with partial "page-body.html" $ }}<p class="term-desc">{{ . | plainify | truncate 60 }}</p>{{ end }}
         </li>
         {{- end }}
       </div>

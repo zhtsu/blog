@@ -564,6 +564,31 @@
   }
 }
 
+/* ---------- 页脚 ----------
+   原站的 .footer-text 是 16px + overline，重写时这几个类漏了定义，
+   补上并克制一些：小字号、弱化色、居中。 */
+.footer-inner {
+  padding: 18px 0 22px;
+  text-align: center;
+}
+
+.footer-text {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.footer-text strong {
+  color: var(--heading);
+  font-weight: 600;
+}
+
+.footer-sep {
+  margin: 0 6px;
+  color: var(--border);
+}
+
 /* ---------- 归档时间线 ---------- */.archive-card {
   padding: 20px;
 }

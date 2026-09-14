@@ -84,12 +84,17 @@
   font-size: 16px;
 }
 
+/* 正文里的链接：靠颜色区分，不加下划线。
+   原来用 border-bottom 做下划线，但 <a> 自身还会继承浏览器的
+   text-decoration，两者叠加就成了一条又粗又偏的双线。 */
 .post-content a {
-  border-bottom: 1px solid var(--accent-soft);
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: none;
 }
 
 .post-content a:hover {
-  border-bottom-color: var(--accent);
+  color: var(--link-hover);
 }
 
 .post-content ul,

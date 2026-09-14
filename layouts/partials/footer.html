@@ -6,15 +6,5 @@
     <p class="footer-text">
       <small>Copyright &copy; {{ if lt (int $since) $now }}{{ $since }}&ndash;{{ $now }}{{ else }}{{ $now }}{{ end }} <strong>{{ $author }}</strong></small>
     </p>
-    {{- with site.Params.footer.customText }}
-    <p class="footer-text"><small>{{ . }}</small></p>
-    {{- end }}
-    <p class="footer-meta">
-      <a href="{{ "index.xml" | relURL }}" title="RSS">
-        <svg class="icon icon-xs" aria-hidden="true"><use href="#i-rss"></use></svg> RSS
-      </a>
-      <span class="footer-sep">·</span>
-      <span>Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a></span>
-    </p>
   </div>
 </footer>

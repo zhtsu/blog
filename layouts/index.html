@@ -4,8 +4,9 @@
 
 <main id="main">
   <div class="article-box">
-    {{- /* 首页正文（content/_index.md）可写站点简介 */ -}}
-    {{- with .Content }}
+    {{- /* 首页正文（content/_index.md）可写站点简介。
+           用 page-body.html 判断，避免只有注释时渲染出空白卡片 */ -}}
+    {{- with partial "page-body.html" . }}
     <div class="home-intro card">{{ . }}</div>
     {{- end }}
 

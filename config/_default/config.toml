@@ -27,8 +27,9 @@ summaryLength = 80
   isPlainText = true
   notAlternative = true
 
+# 只输出 HTML 与搜索索引，不生成 RSS（/index.xml）
 [outputs]
-  home = ["HTML", "RSS", "SearchIndex"]
+  home = ["HTML", "SearchIndex"]
 
 [sitemap]
   changefreq = "weekly"

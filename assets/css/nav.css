@@ -110,41 +110,23 @@
 }
 
 /* ---------- 导航项 ----------
-   状态区分靠「底色 + 强调色 + 2px 抬起」，位移量小、过渡快，
-   避免原站那套 Bootstrap 默认态（纯色块闪烁、无位移反馈）。 */
+   状态区分只靠「底色 + 强调色 + 轻微位移」。
+   刻意不做文字下划线或底部指示条：hover 反馈已经有底色和位移，
+   再加一条线就是同一件事说两遍。 */
 .nav-menu .nav-item a {
-  position: relative;
   display: block;
   padding: 8px 13px;
   border-radius: var(--radius);
   color: var(--text-muted);
   font-size: 14px;
-  transition: background-color var(--transition), color var(--transition), transform var(--transition);
-}
-
-.nav-menu .nav-item a::after {
-  content: "";
-  position: absolute;
-  left: 13px;
-  right: 13px;
-  bottom: 4px;
-  height: 2px;
-  border-radius: 1px;
-  background: currentColor;
-  opacity: 0;
-  transform: scaleX(0.4);
-  transition: opacity var(--transition), transform var(--transition);
+  text-decoration: none;
+  transition: background-color var(--transition), color var(--transition);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .nav-menu .nav-item a:hover {
     color: var(--heading);
-    background: rgb(0 0 0 / 4%);
-  }
-
-  .nav-menu .nav-item a:hover::after {
-    opacity: 0.35;
-    transform: scaleX(1);
+    background: rgb(0 0 0 / 5%);
   }
 }
 
@@ -153,10 +135,6 @@
   background: var(--accent);
   color: #fff;
   box-shadow: 0 2px 8px -2px var(--accent);
-}
-
-.nav-menu .nav-item.active a::after {
-  opacity: 0;
 }
 
 /* ---------- 右侧操作区 ---------- */
@@ -321,7 +299,6 @@
 @media (prefers-reduced-motion: reduce) {
   .site-nav,
   .nav-menu .nav-item a,
-  .nav-menu .nav-item a::after,
   .nav-toggle,
   .nav-search,
   .theme-toggle {

@@ -9,7 +9,7 @@
         <svg class="icon icon-xs" aria-hidden="true"><use href="#i-calendar"></use></svg>
         归档
       </h1>
-      {{- with .Content }}<div class="list-desc">{{ . }}</div>{{ end }}
+      {{- with partial "page-body.html" $ }}<div class="list-desc">{{ . }}</div>{{ end }}
       <p class="list-count">共 {{ len $pages }} 篇</p>
     </header>
 

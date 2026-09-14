@@ -24,9 +24,16 @@ body.blog {
   transition: background-color var(--transition), color var(--transition);
 }
 
+a,
+a:hover,
+a:focus,
+a:active,
+a:visited {
+  text-decoration: none;
+}
+
 a {
   color: var(--link);
-  text-decoration: none;
   transition: color var(--transition);
 }
 
