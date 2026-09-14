@@ -1,10 +1,9 @@
 # ============================================================
 #  站点基础配置
-#  latest 分支：纯模板 Hugo 站点，无历史数据
 # ============================================================
 
 baseURL = "https://blog.zhtsu.cc/"
-title = "摆大新青年"
+title = "zhtsu"
 languageCode = "zh-cn"
 defaultContentLanguage = "zh-cn"
 

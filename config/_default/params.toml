@@ -3,12 +3,12 @@
 # ============================================================
 
 # 站点副标题，显示在页头 logo 下方
-subtitle = "瞎写点东西的地方"
+subtitle = ""
 
 # 浏览器标签页 / 卡片图标
 favicon = "/favicon.png"
 
-# 首页每页文章数（覆盖 config.toml 的 paginate）
+# 首页每页文章数
 pagerSize = 8
 
 # 文章正文页显示 "本文共 N 字"
@@ -22,6 +22,8 @@ tocOpen = false
 
 # 文章卡片是否显示摘要
 showSummary = true
+# 文章卡片是否显示封面图
+showCover = true
 
 # 页脚
 [footer]
@@ -59,7 +61,7 @@ showSummary = true
   url = "/about/"
   weight = 50
 
-# ---- 顶栏右侧下拉（对应原站「其他」）----
+# ---- 顶栏右侧下拉 ----
 [[dropdown]]
   name = "CSDN"
   url = "https://blog.csdn.net/weixin_45711556"
@@ -72,50 +74,30 @@ showSummary = true
   name = "GitHub"
   url = "https://github.com/zhtsu"
 
-# ---- 侧栏：友情链接 ----
+# ---- 侧栏：友情链接（沿用 main 的 content/page/links）----
 [[links]]
-  name = "Bootstrap"
-  url = "https://v3.bootcss.com/"
-
-[[links]]
-  name = "TTK"
-  url = "https://www.tatakai.cn/"
-
-[[links]]
-  name = "zhtsu"
-  url = "https://www.zhtsu.cn/"
+  name = "GOOBLOG"
+  url = "https://www.blog.googookuki.cn/#/home"
 
 # ---- 侧栏：个人卡片 ----
 [profile]
   enabled = true
   title = "关于我"
-  # 头像放在 assets/img/ 下（会被 Hugo 处理），或换成外链
+  # 头像：留空则显示内置图标占位
   avatar = ""
-  bio = "写代码，也写点别的。"
+  bio = ""
 
 # ---- 看板娘（Live2D）----
 [live2d]
   enabled = true
-  # 小于该宽度不加载看板娘（原站逻辑为 768）
+  # 小于该宽度不加载看板娘
   minWidth = 768
   # 是否使用本地 vendor 的资源（static/live2d/），false 则走 CDN
   local = true
   # CDN 兜底地址
   cdnPath = "https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/"
   # 模型 API
-  modelApi = "https://cdn.jsdelivr.net/gh/fghrsh/live2d_api/"
-
-# ---- 评论（默认关闭，按需开启）----
-[comments]
-  enabled = false
-  provider = "giscus"
-  [comments.giscus]
-    repo = ""
-    repoID = ""
-    category = ""
-    categoryID = ""
-    mapping = "pathname"
-    lang = "zh-CN"
+  modelApi = "https://cdn.jsdelivr.net/gh/fghrss/live2d_api/"
 
 # ---- 暗色模式 ----
 [darkMode]

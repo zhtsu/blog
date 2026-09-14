@@ -1,0 +1,7 @@
+{{- /* 渲染封面 <img>。
+       参数：page(必填), class(可选) */ -}}
+{{- $page := .page -}}
+{{- $class := .class | default "" -}}
+{{- with partial "cover-src.html" $page -}}
+<img class="cover-img {{ $class }}" src="{{ . }}" alt="{{ $page.Title }}" loading="lazy" decoding="async">
+{{- end -}}

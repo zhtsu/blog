@@ -1,0 +1,25 @@
+{{- /* 由标签/分类名反查词条页的真实 URL。
+       不能自己拼 "tags/" + urlize(.name)：
+       taxonomy 词条页的地址取决于目录名/标题的大小写与转写，
+       自己拼很容易拼出 404。这里从 site.Taxonomies 里取规范地址。
+       参数：page(当前页，用于取站点 Taxonomies), taxonomy(如 "tags"), name(词条名) */ -}}
+{{- $tax := index .page.Site.Taxonomies .taxonomy -}}
+{{- $name := .name -}}
+{{- $url := "" -}}
+{{- with $tax -}}
+  {{- with index . $name -}}
+    {{- $url = .Page.RelPermalink -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $url -}}
+  {{- /* 兜底：按 Title 忽略大小写匹配 */ -}}
+  {{- range $term, $weighted := $tax -}}
+    {{- if eq (lower $term) (lower $name) -}}
+      {{- $url = $weighted.Page.RelPermalink -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $url -}}
+  {{- $url = printf "/%s/%s/" .taxonomy (urlize $name) | relURL -}}
+{{- end -}}
+{{- return $url -}}

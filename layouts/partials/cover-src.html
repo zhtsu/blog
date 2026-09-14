@@ -1,0 +1,17 @@
+{{- /* 只算封面图地址，返回字符串（给卡片用）。
+       支持两种取值：
+       - 页面资源名：文章是 page bundle，图片与 index.md 同目录
+       - 外链 URL
+       找不到时返回空字符串。 */ -}}
+{{- $name := .Params.image -}}
+{{- $src := "" -}}
+{{- if $name -}}
+  {{- if or (hasPrefix $name "http://") (hasPrefix $name "https://") -}}
+    {{- $src = $name -}}
+  {{- else -}}
+    {{- with .Resources.GetMatch $name -}}
+      {{- $src = .RelPermalink -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $src -}}

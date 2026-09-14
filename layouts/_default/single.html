@@ -25,20 +25,23 @@
           {{- with .Params.categories }}
           <span class="meta-item">
             <svg class="icon icon-xs" aria-hidden="true"><use href="#i-folder"></use></svg>
-            {{- range $i, $c := . }}{{ if $i }}<span class="meta-sep">/</span>{{ end }}<a href="{{ (printf "categories/%s/" (urlize $c)) | relURL }}">{{ $c }}</a>{{ end }}
+            {{- range $i, $c := . }}{{ if $i }}<span class="meta-sep">/</span>{{ end }}<a href="{{ partial "term-url.html" (dict "page" $ "taxonomy" "categories" "name" $c) }}">{{ $c }}</a>{{ end }}
           </span>
           {{- end }}
         </div>
         {{- with .Params.tags }}
         <div class="post-tags">
           {{- range . }}
-          <a class="tag-chip" href="{{ (printf "tags/%s/" (urlize .)) | relURL }}">
+          <a class="tag-chip" href="{{ partial "term-url.html" (dict "page" $ "taxonomy" "tags" "name" .) }}">
             <svg class="icon icon-xs" aria-hidden="true"><use href="#i-tag"></use></svg>{{ . }}
           </a>
           {{- end }}
         </div>
         {{- end }}
       </header>
+
+      {{- /* 封面图 */}}
+      {{ partial "cover.html" (dict "page" . "class" "post-cover") }}
 
       {{ partial "toc.html" . }}
 

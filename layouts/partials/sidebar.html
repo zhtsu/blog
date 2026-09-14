@@ -40,29 +40,36 @@
     </ul>
   </div>
 
-  {{- /* 推荐文章卡片：取 pinned 或 recommend 标记的文章 */ -}}
+  {{- /* 文章卡片：优先取 pinned / recommend 标记的，否则回落为最新文章。
+         main 分支的文章没有这两个标记，所以默认显示「最新文章」，
+         加了标记后标题自动变成「推荐文章」。 */ -}}
+  {{- $pinned := where site.RegularPages "Params.pinned" true -}}
+  {{- $recommend := where site.RegularPages "Params.recommend" true -}}
+  {{- $picks := $pinned | append $recommend | uniq -}}
+  {{- $isPicks := gt (len $picks) 0 -}}
+  {{- if not $isPicks }}
+    {{- $picks = first 5 (where site.RegularPages "Section" "post") -}}
+  {{- end }}
+  {{- if $picks }}
   <div class="card">
     <ul class="nav nav-pills nav-stacked card-list">
       <li role="presentation" class="disabled">
-        <a class="card-title" href="#">
+        <a class="card-title" href="{{ "post/" | relURL }}">
+          {{- if $isPicks }}
           <svg class="icon icon-xs" aria-hidden="true"><use href="#i-pin"></use></svg> 推荐文章
+          {{- else }}
+          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-clock"></use></svg> 最新文章
+          {{- end }}
         </a>
       </li>
-      {{- $pinned := where site.RegularPages "Params.pinned" true -}}
-      {{- $recommend := where site.RegularPages "Params.recommend" true -}}
-      {{- $picks := $pinned | append $recommend | uniq -}}
-      {{- if not $picks }}
-        {{- $picks = first 5 (where site.RegularPages "Section" "post") -}}
-      {{- end }}
       {{- range first 5 $picks }}
       <li role="presentation">
         <a class="card-link" href="{{ .RelPermalink }}" title="{{ .Title }}">{{ .Title | truncate 18 }}</a>
       </li>
-      {{- else }}
-      <li role="presentation" class="empty-hint"><span>还没有推荐</span></li>
       {{- end }}
     </ul>
   </div>
+  {{- end }}
 
   {{- /* 友情链接卡片 */ -}}
   {{- with site.Params.links }}
@@ -92,8 +99,10 @@
         </a>
       </li>
       {{- range .ByCount }}
+      {{- $c := .Page.Params.style.background -}}
       <li role="presentation">
         <a class="card-link" href="{{ .Page.RelPermalink }}">
+          {{- with $c }}<span class="cat-dot" style="background: {{ . }}"></span>{{ end }}
           {{ .Page.Title }}
           <span class="badge">{{ .Count }}</span>
         </a>

@@ -61,9 +61,21 @@ static/
   favicon.png
 content/
   _index.md            首页简介
-  post/                文章（每篇一个目录 + index.md）
+  post/                文章（每篇一个目录 + index.md + 同目录图片）
+  categories/          分类定义（含徽章配色）
   archives/ search/ about/
 ```
+
+## 内容与 main 分支的关系
+
+`latest` 的文章、分类、图片全部从 `main` 迁移而来（9 篇文章 / 9 个标签 / 3 个分类），沿用 main 原有的约定，没有改写 front matter：
+
+- **URL 保持不变**：`config/_default/permalinks.toml` 里 `post = "/p/:slug/"`，与 main 一致，线上已收录的链接不会失效
+- **封面图**：文章用 `image: cover-07.png` 指同目录的图片资源（page bundle），模板按页面资源解析
+- **分类徽章配色**：`content/categories/<name>/_index.md` 里的 `style.background`，侧栏分类项前的色点直接读它
+- **标签大小写**：taxonomy 词条页 URL 由 Hugo 生成（`C++` → `/tags/c++/`），模板里用 `partials/term-url.html` 反查真实地址，**不要自己拼** `tags/` + `urlize(name)`
+
+`temp/web/` 那版静态站只是设计参考，不入库（已在 `.gitignore` 里）。
 
 ## 本地开发
 
@@ -87,12 +99,18 @@ front matter 可用字段：
 | `title` | string | 标题 |
 | `date` | date | 发布日期 |
 | `lastmod` | date | 与 `date` 不同时会额外显示"最后更新" |
+| `image` | string | 封面图，填同目录下的文件名（如 `cover-07.png`），也支持外链 |
 | `categories` | array | 分类，生成 `/categories/xxx/` |
 | `tags` | array | 标签，生成 `/tags/xxx/` |
-| `pinned` | bool | 置顶：卡片带角标，并进入侧栏"推荐文章" |
-| `recommend` | bool | 只进侧栏"推荐文章" |
+| `pinned` | bool | 置顶：卡片带角标，并让侧栏标题变成"推荐文章" |
+| `recommend` | bool | 同上，但不加角标 |
 | `summary` | string | 卡片摘要，不写则由 Hugo 自动截取 |
 | `description` | string | `<meta name="description">` 与 og 标签 |
+
+封面图开关是 `params.toml` 里的 `showCover`。
+
+> 侧栏那张卡片是个特例：`pinned` / `recommend` 一篇都没有时，它回落显示**最新文章**；
+> 一旦有任何一篇带标记，标题自动变成**推荐文章**。
 
 参数都在 `config/_default/params.toml`，不需要改模板。
 
