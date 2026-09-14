@@ -1,6 +1,7 @@
 ---
 title: 《迷雾》影评
 date: 2024-04-05
+description: 第一次写影评。迷雾讲的是怪物围城，真正让人不适的是结尾那个选择。
 image: cover-03.png
 tags: 
     - Movies

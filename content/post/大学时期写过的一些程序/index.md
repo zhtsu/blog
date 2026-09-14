@@ -1,6 +1,7 @@
 ---
 title: 大学时期写过的一些程序
 date: 2022-03-07		
+description: 从大一课程设计到毕业项目，把那些年写过的作业和练手项目整理成一份存档，附下载地址与技术栈。
 image: cover-06.png
 tags: 
     - Archive

@@ -2,12 +2,15 @@
    组件层：卡片 / 文章列表 / 分页 / 侧栏 / 浮动按钮 / 空状态
    ============================================================ */
 
-/* ---------- 卡片容器：侧栏 .card 与文章卡片共用同一套视觉令牌 ---------- */
+/* ---------- 卡片容器：侧栏 .card 与文章卡片共用同一套视觉令牌 ----------
+   卡片底色 #f8f8f8 与页面底色 #dadada 对比很弱，10px 的间距在视觉上
+   几乎分不开，看起来像两块粘在一起。这里用独立的 --card-gap 把间距
+   拉到 16px，卡片之间的边界才立得住。 */
 .card {
   background-color: var(--card-color);
   border-radius: var(--card-radius);
   box-shadow: var(--card-shadow);
-  margin-bottom: var(--gap);
+  margin-bottom: var(--card-gap);
   transition: box-shadow var(--transition), background-color var(--transition);
 }
 
@@ -142,12 +145,13 @@
 }
 
 .post-card-summary {
-  margin: 0;
+  margin: 2px 0 0;
   color: var(--text-muted);
   font-size: 13.5px;
-  line-height: 1.68;
+  line-height: 1.72;
+  /* 最多三行，超出省略；比两行更能放下完整一句话 */
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

@@ -50,7 +50,12 @@
     </h{{ $h }}>
 
     {{- if $showSummary }}
-      {{- with $page.Summary }}
+      {{- /* 简介优先级：手写的 description > 手写的 summary > Hugo 自动摘要。
+             description 是本站的主要来源——自动摘要在中文下是机械截断，
+             经常切到半个词甚至只剩标题（如「2023 2022」）。 */ -}}
+      {{- $intro := $page.Description | default $page.Params.summary -}}
+      {{- $intro = $intro | default ($page.Summary | plainify) -}}
+      {{- with $intro }}
       <p class="post-card-summary">{{ . | plainify | truncate 110 }}</p>
       {{- end }}
     {{- end }}
