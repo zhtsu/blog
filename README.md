@@ -78,7 +78,7 @@ content/
   _index.md            首页简介
   post/                文章（每篇一个目录 + index.md + 同目录图片）
   categories/          分类定义（含徽章配色）
-  archives/ search/ about/
+  archives/ search/
 ```
 
 ## 内容与 main 分支的关系
@@ -117,15 +117,39 @@ front matter 可用字段：
 | `image` | string | 封面图，填同目录下的文件名（如 `cover-07.png`），也支持外链 |
 | `categories` | array | 分类，生成 `/categories/xxx/` |
 | `tags` | array | 标签，生成 `/tags/xxx/` |
-| `pinned` | bool | 置顶：卡片带角标，并让侧栏标题变成"推荐文章" |
-| `recommend` | bool | 同上，但不加角标 |
-| `summary` | string | 卡片摘要，不写则由 Hugo 自动截取 |
-| `description` | string | `<meta name="description">` 与 og 标签 |
+| `pinned` | bool | 置顶：卡片上显示角标 |
+| `summary` | string | 卡片摘要；同时写 `description` 时以后者优先 |
+| `description` | string | 卡片摘要 + `<meta name="description">` + og 标签 |
 
 封面图开关是 `params.toml` 里的 `showCover`。
 
-> 侧栏那张卡片是个特例：`pinned` / `recommend` 一篇都没有时，它回落显示**最新文章**；
-> 一旦有任何一篇带标记，标题自动变成**推荐文章**。
+### 「推荐文章」是特殊标签
+
+侧栏「推荐文章」卡片由**标签**驱动，标签名在 `params.toml`：
+
+```toml
+[recommend]
+  tag = "推荐文章"
+```
+
+给文章 front matter 的 `tags` 加上这个名字即可进卡片（按日期倒序，最多 5 条）：
+
+```yaml
+tags:
+    - GameDev
+    - 推荐文章
+```
+
+它被当作**内部标记**，而不是普通标签，所以：
+
+- 不出现在文章卡片的标签 chip、正文页标签、侧栏「标签」列表、`/tags/` 总览页里
+- 不出现在 `search.json` 的 `tags` 字段里
+- `/tags/推荐文章/` 词条页虽然会被构建出来，但**站内没有任何入口链接到它**（保留可用，不对外暴露）
+
+过滤逻辑集中在两个 partial：`rec-tag-name.html`（标签名唯一入口）与 `tags-public.html`（过滤列表）。
+要换标签名，只改 `params.toml` 一处。
+
+> 一篇都没打这个标签时，卡片回落显示**最新文章**，标题自动切换。
 
 参数都在 `config/_default/params.toml`，不需要改模板。
 

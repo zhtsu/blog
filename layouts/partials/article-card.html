@@ -66,7 +66,8 @@
         <svg class="icon icon-xs" aria-hidden="true"><use href="#i-clock"></use></svg>{{ $page.ReadingTime }} 分钟
       </span>
       {{- end }}
-      {{- with $page.Params.tags }}
+      {{- /* 标签一律经 tags-public 过滤，「推荐文章」这类特殊标签不在此显示 */ -}}
+      {{- with partial "tags-public.html" $page }}
       <span class="post-card-tags">
         {{- range first 3 . }}
         <a class="tag-chip" href="{{ partial "term-url.html" (dict "page" $page "taxonomy" "tags" "name" .) }}">{{ . }}</a>

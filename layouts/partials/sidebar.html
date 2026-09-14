@@ -34,17 +34,25 @@
           <svg class="icon icon-xs" aria-hidden="true"><use href="#i-tag"></use></svg> 标签
         </a>
       </li>
+      {{- /* 「推荐文章」是特殊标签，只驱动下面的推荐卡片，
+             不作为普通标签出现在这里 */ -}}
+      {{- $special := partial "rec-tag-name.html" . | lower -}}
       {{- $tags := site.Taxonomies.tags -}}
+      {{- $shown := 0 -}}
       {{- if $tags }}
         {{- range $tags.ByCount }}
+          {{- if ne (lower .Page.Title) $special -}}
+            {{- $shown = add $shown 1 }}
         <li role="presentation">
           <a class="card-link" href="{{ .Page.RelPermalink }}">
             <span class="card-link-text">{{ .Page.Title }}</span>
             <span class="badge">{{ .Count }}</span>
           </a>
         </li>
+          {{- end }}
         {{- end }}
-      {{- else }}
+      {{- end }}
+      {{- if eq $shown 0 }}
         <li role="presentation" class="empty-hint"><span>还没有标签</span></li>
       {{- end }}
     </ul>
@@ -66,7 +74,10 @@
   <div class="card">
     <ul class="nav nav-pills nav-stacked card-list">
       <li role="presentation" class="disabled">
-        <a class="card-title" href="{{ if $isRec }}{{ (printf "tags/%s/" (urlize $recTag)) | relURL }}{{ else }}{{ "post/" | relURL }}{{ end }}">
+        {{- /* 标题不指向 /tags/推荐文章/：这个标签是内部驱动用的，
+               不应作为一个可发现的标签页入口出现在全站每一页。
+               卡片的实际价值是下面那几条文章链接。 */ -}}
+        <a class="card-title" href="{{ "post/" | relURL }}">
           {{- if $isRec }}
           <svg class="icon icon-xs" aria-hidden="true"><use href="#i-star"></use></svg> 推荐文章
           {{- else }}

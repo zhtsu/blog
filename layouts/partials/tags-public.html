@@ -1,0 +1,13 @@
+{{- /* 「推荐文章」是特殊标签：它只用来驱动侧栏的推荐卡片，
+       不应当像普通标签那样出现在文章卡片、正文页、标签总览里。
+       这个 partial 负责把普通标签列表过滤干净。
+       参数：page（当前页，用来解析站点配置与分类列表） */ -}}
+{{- $page := . -}}
+{{- $special := partial "rec-tag-name.html" $page | lower -}}
+{{- $out := slice -}}
+{{- range $page.Params.tags -}}
+  {{- if ne (lower .) $special -}}
+    {{- $out = $out | append . -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}

@@ -14,7 +14,7 @@
     "url": {{ $p.RelPermalink | jsonify }},
     "date": {{ $p.Date.Format (site.Params.dateFormat.list | default "2006-01-02") | jsonify }},
     "categories": {{ $p.Params.categories | default slice | jsonify }},
-    "tags": {{ $p.Params.tags | default slice | jsonify }},
+    "tags": {{ partial "tags-public.html" $p | jsonify }},
     "summary": {{ ($p.Description | default $p.Summary | plainify) | jsonify }},
     "content": {{ $body | truncate 3000 | jsonify }}
   }

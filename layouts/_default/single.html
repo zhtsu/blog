@@ -29,7 +29,7 @@
           </span>
           {{- end }}
         </div>
-        {{- with .Params.tags }}
+        {{- with partial "tags-public.html" . }}
         <div class="post-tags">
           {{- range . }}
           <a class="tag-chip" href="{{ partial "term-url.html" (dict "page" $ "taxonomy" "tags" "name" .) }}">

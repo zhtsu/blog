@@ -1,0 +1,5 @@
+{{- /* 纯字面量 partial：返回「推荐文章」这个特殊标签的名字。
+       Hugo 的 partial 无法返回非字符串，而 slice 字面量在 Go 模板里
+       没法直接跨层传递，所以单独放一个小 partial 做唯一入口。
+       各处一律用它取标签名，改装时只改 params.toml —— 单一事实来源。 */ -}}
+{{- return (site.Params.recommend.tag | default "推荐文章") -}}

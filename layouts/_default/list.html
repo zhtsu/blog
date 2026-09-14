@@ -11,6 +11,15 @@
 <main id="main">
   <div class="article-box">
 
+    {{- /* 词条页若配了头图，标题/篇数/描述全部并入横幅，
+           不再另起一张列表头卡片——两段信息合成一块，图也能给得更高。
+           没配头图的词条（如标签页）以及 taxonomy 总览页仍走普通列表头。 */ -}}
+    {{- $banner := "" -}}
+    {{- if $isTerm }}{{ $banner = partial "term-cover.html" . }}{{ end -}}
+
+    {{- if $banner }}
+    {{ $banner | safeHTML }}
+    {{- else }}
     <header class="list-head card">
       <h1 class="list-title">
         {{- if $isTerm }}
@@ -28,15 +37,22 @@
         {{- end -}}
       </p>
     </header>
-
-    {{- /* 词条页头图：数据来自 content/categories/<name>/_index.md 的 image: */ -}}
-    {{- if $isTerm }}{{ partial "term-cover.html" . }}{{ end }}
+    {{- end }}
 
     {{- if $isTaxonomy }}
       {{- /* 标签 / 分类总览：把词条渲染成卡片网格，而不是空的列表 */ -}}
-      {{- if .Pages }}
+      {{- /* 标签/分类总览：特殊标签（推荐文章）不作为一个词条列出，
+             它只由侧栏的推荐卡片使用。 */ -}}
+      {{- $special := partial "rec-tag-name.html" . | lower -}}
+      {{- $terms := slice -}}
+      {{- range .Pages.ByTitle -}}
+        {{- if ne (lower .Title) $special -}}
+          {{- $terms = $terms | append . -}}
+        {{- end -}}
+      {{- end -}}
+      {{- if $terms }}
       <ul class="term-grid">
-        {{- range .Pages.ByTitle }}
+        {{- range $terms }}
         <li class="term-item card">
           <a class="term-link" href="{{ .RelPermalink }}">
             <span class="term-name">{{ .Title }}</span>

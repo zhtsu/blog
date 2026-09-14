@@ -1,9 +1,13 @@
-{{- /* 分类 / 标签词条页的头图。
+{{- /* 词条页头图（分类 / 标签）。
        数据来自 content/categories/<name>/_index.md 的 image:，
-       它是该目录下的页面资源（如 sakuya.jpg）。
-       参数：page（词条页 page） */ -}}
+       是该目录下的页面资源。
+
+       这一版把原先分离的「头图」和「列表头卡片」合并：
+       标题、篇数、描述全部压在图上，图片给到更高，
+       不再在图上叠一个独立的白色条。 */ -}}
 {{- $page := . -}}
 {{- $name := $page.Params.image -}}
+{{- $desc := partial "page-body.html" $page -}}
 {{- if $name -}}
   {{- $src := "" -}}
   {{- if or (hasPrefix $name "http://") (hasPrefix $name "https://") -}}
@@ -14,9 +18,20 @@
     {{- end -}}
   {{- end -}}
   {{- with $src -}}
-  <div class="term-cover">
-    <img src="{{ . }}" alt="{{ $page.Title }}" loading="lazy" decoding="async">
-    <span class="term-cover-title">{{ $page.Title }}</span>
-  </div>
+  <header class="term-banner">
+    <img class="term-banner-img" src="{{ . }}" alt="" loading="eager" decoding="async">
+    <div class="term-banner-body">
+      <h1 class="term-banner-title">
+        {{- if eq $page.Data.Plural "tags" -}}
+        <svg class="icon" aria-hidden="true"><use href="#i-tag"></use></svg>
+        {{- else -}}
+        <svg class="icon" aria-hidden="true"><use href="#i-folder"></use></svg>
+        {{- end -}}
+        {{ $page.Title }}
+      </h1>
+      {{- with $desc }}<p class="term-banner-desc">{{ . | plainify }}</p>{{ end }}
+      <p class="term-banner-count">共 {{ len $page.Pages }} 篇</p>
+    </div>
+  </header>
   {{- end -}}
 {{- end -}}
