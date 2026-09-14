@@ -1,0 +1,78 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>{{ if .IsHome }}{{ site.Title }}{{ with site.Params.subtitle }} · {{ . }}{{ end }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+
+  {{- $desc := .Description | default .Summary | default site.Params.description -}}
+  {{- with $desc }}
+  <meta name="description" content="{{ . | plainify | truncate 150 }}">
+  {{- end }}
+  {{- with .Params.tags }}
+  <meta name="keywords" content="{{ delimit . "," }}">
+  {{- end }}
+  <meta name="author" content="{{ site.Params.author | default site.Title }}">
+
+  {{- /* canonical + RSS */}}
+  <link rel="canonical" href="{{ .Permalink }}">
+  {{- with .OutputFormats.Get "rss" }}
+  <link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ site.Title }}">
+  {{- end }}
+
+  {{- /* Open Graph */}}
+  <meta property="og:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }}{{ end }}">
+  <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+  <meta property="og:url" content="{{ .Permalink }}">
+  <meta property="og:site_name" content="{{ site.Title }}">
+  {{- with $desc }}
+  <meta property="og:description" content="{{ . | plainify | truncate 150 }}">
+  {{- end }}
+
+  {{- with site.Params.favicon }}
+  <link rel="icon" href="{{ . | relURL }}">
+  <link rel="apple-touch-icon" href="{{ . | relURL }}">
+  {{- end }}
+
+  {{- /* 暗色模式：必须在 CSS 之前内联执行，避免首屏白闪（FOUC） */}}
+  {{- if site.Params.darkMode.enabled }}
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('color-scheme');
+        var mode = stored || {{ site.Params.darkMode.default | default "auto" }};
+        var dark = mode === 'dark' || (mode === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      } catch (e) {}
+    })();
+  </script>
+  {{- end }}
+
+  {{- /* Bootstrap 3：原站设计基线，保留以维持栅格与组件观感 */}}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+  {{- /* 站点样式：按层叠顺序拼接（令牌 → 基础 → 布局 → 组件 → 正文 → 暗色 → Bootstrap 兼容 → 代码高亮），
+         打包压缩加指纹，一次请求搞定。 */}}
+  {{- $css := slice
+        (resources.Get "css/variables.css")
+        (resources.Get "css/base.css")
+        (resources.Get "css/layout.css")
+        (resources.Get "css/components.css")
+        (resources.Get "css/content.css")
+        (resources.Get "css/dark.css")
+        (resources.Get "css/bootstrap-fix.css")
+        (resources.Get "css/chroma.css")
+      | resources.Concat "css/site.css" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+
+  {{- /* 代码高亮暗色配色：`hugo gen chromastyles --style=github-dark` 生成，
+         由 chroma-dark.css 内嵌的模板把每条规则包进 [data-theme="dark"]，
+         省得手写第二套 token 颜色。 */}}
+  {{- $chromaDark := resources.Get "css/chroma-dark.css"
+        | resources.ExecuteAsTemplate "css/chroma-dark-scoped.css" .
+        | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $chromaDark.RelPermalink }}" integrity="{{ $chromaDark.Data.Integrity }}">
+
+  {{- block "head-extra" . }}{{ end }}
+</head>

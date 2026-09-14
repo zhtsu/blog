@@ -1,0 +1,72 @@
+{{ define "main" }}
+{{- $pages := .RegularPages -}}
+{{- if not $pages }}{{ $pages = .Pages }}{{ end -}}
+
+{{- /* 判断当前是 taxonomy 总览（/tags/、/categories/），还是某个词条（/tags/xxx/） */ -}}
+{{- $isTerm := eq .Kind "term" -}}
+{{- $isTaxonomy := eq .Kind "taxonomy" -}}
+{{- $isSection := eq .Kind "section" -}}
+{{- $isTaxoHome := or $isTaxonomy $isTerm -}}
+
+<main id="main">
+  <div class="article-box">
+
+    <header class="list-head card">
+      <h1 class="list-title">
+        {{- if $isTerm }}
+        <svg class="icon icon-xs" aria-hidden="true"><use href="#i-tag"></use></svg>
+        {{ end -}}
+        {{ .Title }}
+      </h1>
+      {{- with .Content }}<div class="list-desc">{{ . }}</div>{{ end }}
+      <p class="list-count">
+        {{- if $isTaxonomy -}}
+          {{ len .Pages }} 个{{ if eq .Data.Plural "tags" }}标签{{ else if eq .Data.Plural "categories" }}分类{{ else }}词条{{ end }}
+        {{- else -}}
+          共 {{ len $pages }} 篇
+        {{- end -}}
+      </p>
+    </header>
+
+    {{- if $isTaxonomy }}
+      {{- /* 标签 / 分类总览：把词条渲染成卡片网格，而不是空的列表 */ -}}
+      {{- if .Pages }}
+      <ul class="term-grid">
+        {{- range .Pages.ByTitle }}
+        <li class="term-item card">
+          <a class="term-link" href="{{ .RelPermalink }}">
+            <span class="term-name">{{ .Title }}</span>
+            <span class="badge">{{ len .Pages }}</span>
+          </a>
+          {{- with .Content }}<p class="term-desc">{{ . | plainify | truncate 60 }}</p>{{ end }}
+        </li>
+        {{- end }}
+      </ul>
+      {{- else }}
+      <div class="empty-state card">
+        <p class="empty-title">还没有内容</p>
+        <p class="empty-desc">给文章 front matter 加上 <code>tags</code> / <code>categories</code> 后，这里会自动生成。</p>
+      </div>
+      {{- end }}
+
+    {{- else if $pages }}
+      <ul class="article-list">
+        {{- range $pages }}
+        {{ partial "article-card.html" (dict "page" . "showSummary" site.Params.showSummary) }}
+        {{- end }}
+      </ul>
+
+    {{- else }}
+      <div class="empty-state card">
+        <p class="empty-title">{{ if $isSection }}这个栏目还没有文章{{ else }}这里还没有内容{{ end }}</p>
+        {{- if $isSection }}
+        <p class="empty-desc">在 <code>content/{{ .Section }}/</code> 下新建文章目录即可。</p>
+        {{- end }}
+      </div>
+    {{- end }}
+
+  </div>
+
+  {{ partial "sidebar.html" . }}
+</main>
+{{ end }}

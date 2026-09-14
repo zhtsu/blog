@@ -1,17 +1,26 @@
-# Markdown renderer configuration
-[goldmark.renderer]
-unsafe = true
+# Markdown 渲染 + 代码高亮
+[goldmark]
+  [goldmark.renderer]
+    unsafe = true
+    hardWraps = false
+  [goldmark.parser]
+    autoHeadingID = true
+    autoHeadingIDType = "github"
+  [goldmark.parser.attribute]
+    block = true
+    title = true
 
 [tableOfContents]
-endLevel = 4
-ordered = true
-startLevel = 2
+  startLevel = 2
+  endLevel = 4
+  ordered = false
 
 [highlight]
-noClasses = false
-codeFences = true
-guessSyntax = true
-lineNoStart = 1
-lineNos = true
-lineNumbersInTable = true
-tabWidth = 4
+  codeFences = true
+  guessSyntax = true
+  lineNoStart = 1
+  lineNos = false
+  lineNumbersInTable = true
+  noClasses = false
+  style = "github"
+  tabWidth = 4

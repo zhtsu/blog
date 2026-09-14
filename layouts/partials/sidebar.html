@@ -1,0 +1,106 @@
+{{/* 右侧栏卡片组：对应原站 .aside-box 内的三个 .card。原站标签/友链是 JS 硬编码，这里全部由 Hugo 数据生成。 */}}
+<aside class="aside-box">
+
+  {{- /* 个人卡片：原站没有，属于「扩展」 */ -}}
+  {{- if site.Params.profile.enabled }}
+  <div class="card profile-card">
+    {{- with site.Params.profile.avatar }}
+    <img class="profile-avatar" src="{{ . | relURL }}" alt="{{ site.Params.profile.title }}" loading="lazy">
+    {{- else }}
+    <span class="profile-avatar profile-avatar-fallback" aria-hidden="true">
+      <svg class="icon" aria-hidden="true"><use href="#i-user"></use></svg>
+    </span>
+    {{- end }}
+    <p class="profile-title">{{ site.Params.profile.title }}</p>
+    {{- with site.Params.profile.bio }}<p class="profile-bio">{{ . }}</p>{{ end }}
+  </div>
+  {{- end }}
+
+  {{- /* 文章标签卡片 */ -}}
+  <div class="card">
+    <ul class="nav nav-pills nav-stacked card-list">
+      <li role="presentation" class="disabled">
+        <a class="card-title" href="{{ "tags/" | relURL }}">
+          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-tag"></use></svg> 文章标签
+        </a>
+      </li>
+      {{- $tags := site.Taxonomies.tags -}}
+      {{- if $tags }}
+        {{- range $tags.ByCount }}
+        <li role="presentation">
+          <a class="card-link" href="{{ .Page.RelPermalink }}">
+            {{ .Page.Title }}
+            <span class="badge">{{ .Count }}</span>
+          </a>
+        </li>
+        {{- end }}
+      {{- else }}
+        <li role="presentation" class="empty-hint"><span>还没有标签</span></li>
+      {{- end }}
+    </ul>
+  </div>
+
+  {{- /* 推荐文章卡片：取 pinned 或 recommend 标记的文章 */ -}}
+  <div class="card">
+    <ul class="nav nav-pills nav-stacked card-list">
+      <li role="presentation" class="disabled">
+        <a class="card-title" href="#">
+          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-pin"></use></svg> 推荐文章
+        </a>
+      </li>
+      {{- $pinned := where site.RegularPages "Params.pinned" true -}}
+      {{- $recommend := where site.RegularPages "Params.recommend" true -}}
+      {{- $picks := $pinned | append $recommend | uniq -}}
+      {{- if not $picks }}
+        {{- $picks = first 5 (where site.RegularPages "Section" "post") -}}
+      {{- end }}
+      {{- range first 5 $picks }}
+      <li role="presentation">
+        <a class="card-link" href="{{ .RelPermalink }}" title="{{ .Title }}">{{ .Title | truncate 18 }}</a>
+      </li>
+      {{- else }}
+      <li role="presentation" class="empty-hint"><span>还没有推荐</span></li>
+      {{- end }}
+    </ul>
+  </div>
+
+  {{- /* 友情链接卡片 */ -}}
+  {{- with site.Params.links }}
+  <div class="card">
+    <ul class="nav nav-pills nav-stacked card-list">
+      <li role="presentation" class="disabled">
+        <a class="card-title" href="#">
+          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-link"></use></svg> 友情链接
+        </a>
+      </li>
+      {{- range . }}
+      <li role="presentation">
+        <a class="card-link" href="{{ .url }}" target="_blank" rel="noopener noreferrer">{{ .name }}</a>
+      </li>
+      {{- end }}
+    </ul>
+  </div>
+  {{- end }}
+
+  {{- /* 分类卡片 */ -}}
+  {{- with site.Taxonomies.categories }}
+  <div class="card">
+    <ul class="nav nav-pills nav-stacked card-list">
+      <li role="presentation" class="disabled">
+        <a class="card-title" href="{{ "categories/" | relURL }}">
+          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-folder"></use></svg> 分类
+        </a>
+      </li>
+      {{- range .ByCount }}
+      <li role="presentation">
+        <a class="card-link" href="{{ .Page.RelPermalink }}">
+          {{ .Page.Title }}
+          <span class="badge">{{ .Count }}</span>
+        </a>
+      </li>
+      {{- end }}
+    </ul>
+  </div>
+  {{- end }}
+
+</aside>

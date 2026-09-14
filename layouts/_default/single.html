@@ -1,0 +1,86 @@
+{{ define "main" }}
+<main id="main">
+  <div class="article-box single-box">
+    <article class="post card">
+
+      <header class="post-header">
+        <h1 class="post-title">{{ .Title }}</h1>
+        <div class="article-meta post-meta">
+          <span class="meta-item">
+            <svg class="icon icon-xs" aria-hidden="true"><use href="#i-calendar"></use></svg>
+            <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format (site.Params.dateFormat.published | default "2006年01月02日") }}</time>
+          </span>
+          {{- if and site.Params.showReadingTime .ReadingTime }}
+          <span class="meta-item">
+            <svg class="icon icon-xs" aria-hidden="true"><use href="#i-clock"></use></svg>
+            {{ .ReadingTime }} 分钟
+          </span>
+          {{- end }}
+          {{- if site.Params.showWordCount }}
+          <span class="meta-item">
+            <svg class="icon icon-xs" aria-hidden="true"><use href="#i-comment"></use></svg>
+            {{ .WordCount }} 字
+          </span>
+          {{- end }}
+          {{- with .Params.categories }}
+          <span class="meta-item">
+            <svg class="icon icon-xs" aria-hidden="true"><use href="#i-folder"></use></svg>
+            {{- range $i, $c := . }}{{ if $i }}<span class="meta-sep">/</span>{{ end }}<a href="{{ (printf "categories/%s/" (urlize $c)) | relURL }}">{{ $c }}</a>{{ end }}
+          </span>
+          {{- end }}
+        </div>
+        {{- with .Params.tags }}
+        <div class="post-tags">
+          {{- range . }}
+          <a class="tag-chip" href="{{ (printf "tags/%s/" (urlize .)) | relURL }}">
+            <svg class="icon icon-xs" aria-hidden="true"><use href="#i-tag"></use></svg>{{ . }}
+          </a>
+          {{- end }}
+        </div>
+        {{- end }}
+      </header>
+
+      {{ partial "toc.html" . }}
+
+      <div class="post-content" id="post-content">
+        {{ .Content }}
+      </div>
+
+      <footer class="post-footer">
+        {{- if .Lastmod }}
+        {{- if ne (.Lastmod.Format "2006-01-02") (.Date.Format "2006-01-02") }}
+        <p class="post-updated">最后更新于 {{ .Lastmod.Format (site.Params.dateFormat.published | default "2006年01月02日") }}</p>
+        {{- end }}
+        {{- end }}
+
+        {{- with .Params.license | default site.Params.article.license }}
+        <p class="post-license">{{ . }}</p>
+        {{- end }}
+
+        <nav class="post-neighbors" aria-label="上下篇">
+          {{- with .PrevInSection }}
+          <a class="neighbor prev" href="{{ .RelPermalink }}">
+            <span class="neighbor-label"><svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-left"></use></svg> 上一篇</span>
+            <span class="neighbor-title">{{ .Title | truncate 24 }}</span>
+          </a>
+          {{- end }}
+          {{- with .NextInSection }}
+          <a class="neighbor next" href="{{ .RelPermalink }}">
+            <span class="neighbor-label">下一篇 <svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-right"></use></svg></span>
+            <span class="neighbor-title">{{ .Title | truncate 24 }}</span>
+          </a>
+          {{- end }}
+        </nav>
+      </footer>
+    </article>
+
+    <p class="back-home">
+      <a href="{{ "/" | relURL }}">
+        <svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-left"></use></svg> 返回首页
+      </a>
+    </p>
+  </div>
+
+  {{ partial "sidebar.html" . }}
+</main>
+{{ end }}

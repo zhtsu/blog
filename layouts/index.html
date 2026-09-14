@@ -1,0 +1,29 @@
+{{ define "main" }}
+{{- $pages := where site.RegularPages "Section" "post" -}}
+{{- $paginator := .Paginate $pages -}}
+
+<main id="main">
+  <div class="article-box">
+    {{- /* 首页正文（content/_index.md）可写站点简介 */ -}}
+    {{- with .Content }}
+    <div class="home-intro card">{{ . }}</div>
+    {{- end }}
+
+    {{- if $paginator.Pages }}
+    <ul class="article-list">
+      {{- range $paginator.Pages }}
+      {{ partial "article-card.html" (dict "page" . "showSummary" site.Params.showSummary) }}
+      {{- end }}
+    </ul>
+    {{ partial "pagination.html" $paginator }}
+    {{- else }}
+    <div class="empty-state card">
+      <p class="empty-title">还没有文章</p>
+      <p class="empty-desc">在 <code>content/post/</code> 下新建 <code>index.md</code> 即可开始写作。</p>
+    </div>
+    {{- end }}
+  </div>
+
+  {{ partial "sidebar.html" . }}
+</main>
+{{ end }}

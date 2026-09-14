@@ -1,0 +1,60 @@
+{{- /* 文章卡片 —— 对应原站 .article-item
+       参数：page(必填), showSummary(bool), headingLevel(可选) */ -}}
+{{- $page := .page -}}
+{{- $showSummary := .showSummary | default true -}}
+{{- $h := .headingLevel | default 2 -}}
+{{- $date := $page.Date -}}
+{{- with $page.Params.lastmod }}{{ $date = . }}{{ end -}}
+
+<li class="article-item">
+  {{- if $page.Params.pinned }}
+  <span class="pin-badge" title="置顶">
+    <svg class="icon icon-xs" aria-hidden="true"><use href="#i-pin"></use></svg> 置顶
+  </span>
+  {{- end }}
+
+  <h{{ $h }} class="article-title">
+    <a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a>
+  </h{{ $h }}>
+
+  <div class="article-meta">
+    <span class="meta-item">
+      <svg class="icon icon-xs" aria-hidden="true"><use href="#i-calendar"></use></svg>
+      <time datetime="{{ $page.Date.Format "2006-01-02" }}">{{ $page.Date.Format (site.Params.dateFormat.list | default "2006-01-02") }}</time>
+    </span>
+    {{- if and site.Params.showReadingTime $page.ReadingTime }}
+    <span class="meta-item">
+      <svg class="icon icon-xs" aria-hidden="true"><use href="#i-clock"></use></svg>
+      {{ $page.ReadingTime }} 分钟
+    </span>
+    {{- end }}
+    {{- with $page.Params.categories }}
+    <span class="meta-item">
+      <svg class="icon icon-xs" aria-hidden="true"><use href="#i-folder"></use></svg>
+      {{- range $i, $c := . }}{{ if $i }}<span class="meta-sep">/</span>{{ end }}<a href="{{ (printf "categories/%s/" (urlize $c)) | relURL }}">{{ $c }}</a>{{ end }}
+    </span>
+    {{- end }}
+  </div>
+
+  {{- if $showSummary }}
+    {{- with $page.Summary }}
+    <p class="article-summary">{{ . | plainify | truncate 120 }}</p>
+    {{- end }}
+  {{- end }}
+
+  <div class="article-foot">
+    <a class="read-more" href="{{ $page.RelPermalink }}">
+      阅读全文
+      <svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-right"></use></svg>
+    </a>
+    {{- with $page.Params.tags }}
+    <span class="article-tags">
+      {{- range . }}
+      <a class="tag-chip" href="{{ (printf "tags/%s/" (urlize .)) | relURL }}">
+        <svg class="icon icon-xs" aria-hidden="true"><use href="#i-tag"></use></svg>{{ . }}
+      </a>
+      {{- end }}
+    </span>
+    {{- end }}
+  </div>
+</li>

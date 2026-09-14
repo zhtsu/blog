@@ -1,0 +1,22 @@
+{{- /* 搜索索引：/search.json
+       输出格式 SearchIndex 定义在 config/_default/config.toml，
+       模板名必须带格式名（searchindex），Hugo 才找得到。
+       用 .RawContent（原始 Markdown）而非 .Content：
+       后者是渲染后的 HTML，代码块里的引号会变成 &#34; 再被 JSON 二次转义。
+       围栏代码块整体摘掉，代码不该进检索正文。 */ -}}
+[
+{{- $pages := where site.RegularPages "Section" "post" -}}
+{{- range $i, $p := $pages }}
+  {{- if $i }},{{ end }}
+  {{- $body := $p.RawContent | replaceRE "(?s)```.*?```" " " | plainify | replaceRE "\\s+" " " -}}
+  {
+    "title": {{ $p.Title | plainify | jsonify }},
+    "url": {{ $p.RelPermalink | jsonify }},
+    "date": {{ $p.Date.Format (site.Params.dateFormat.list | default "2006-01-02") | jsonify }},
+    "categories": {{ $p.Params.categories | default slice | jsonify }},
+    "tags": {{ $p.Params.tags | default slice | jsonify }},
+    "summary": {{ $p.Summary | plainify | jsonify }},
+    "content": {{ $body | truncate 3000 | jsonify }}
+  }
+{{- end }}
+]

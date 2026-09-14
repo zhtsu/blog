@@ -1,0 +1,19 @@
+{{ define "main" }}
+<main id="main">
+  <div class="article-box">
+    <div class="empty-state card notfound">
+      <h1 class="list-title">404</h1>
+      <p class="empty-title">这个页面不见了</p>
+      <p class="empty-desc">链接可能已经失效，或者文章被重命名过。</p>
+      <p class="notfound-actions">
+        <a href="{{ "/" | relURL }}">返回首页</a>
+        <span class="meta-sep">/</span>
+        <a href="{{ "/search/" | relURL }}">去搜索</a>
+        <span class="meta-sep">/</span>
+        <a href="{{ "/archives/" | relURL }}">看归档</a>
+      </p>
+    </div>
+  </div>
+  {{ partial "sidebar.html" . }}
+</main>
+{{ end }}

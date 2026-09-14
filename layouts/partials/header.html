@@ -1,0 +1,70 @@
+{{- /* 顶部导航栏
+       对应原站 design 的 #header > .navbar，
+       但改用自绘的响应式导航（原站 Bootstrap3 折叠菜单在移动端体验不佳）。 */ -}}
+<a class="skip-link" href="#main">跳到正文</a>
+<header id="header">
+  <nav class="site-nav" aria-label="主导航">
+    <div class="nav-inner">
+
+      <div class="nav-brand">
+        <button type="button" class="nav-toggle" id="nav-toggle"
+                aria-expanded="false" aria-controls="top-nav" aria-label="展开菜单">
+          <svg class="icon icon-menu" aria-hidden="true"><use href="#i-menu"></use></svg>
+          <svg class="icon icon-close" aria-hidden="true"><use href="#i-close"></use></svg>
+        </button>
+        <a class="brand-link" href="{{ "/" | relURL }}">
+          <span class="brand-name">{{ site.Title }}</span>
+          {{- with site.Params.subtitle }}<span class="brand-sub">{{ . }}</span>{{ end }}
+        </a>
+      </div>
+
+      <div class="nav-collapse" id="top-nav">
+        <ul class="nav-menu">
+          {{- $cur := .RelPermalink }}
+          {{- range site.Params.main }}
+          <li class="nav-item{{ if and (eq .url "/") (eq $cur "/") }} active{{ else if and (ne .url "/") (hasPrefix $cur .url) }} active{{ end }}">
+            <a href="{{ .url | relURL }}">{{ .name }}</a>
+          </li>
+          {{- end }}
+        </ul>
+
+        <div class="nav-actions">
+          <form class="nav-search" role="search" action="{{ "search/" | relURL }}" method="get">
+            <label class="sr-only" for="nav-search-input">搜索文章</label>
+            <svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg>
+            <input type="search" id="nav-search-input" name="q" placeholder="搜索文章"
+                   autocomplete="off" spellcheck="false">
+            <button type="submit" class="sr-only">搜索</button>
+          </form>
+
+          {{- with site.Params.dropdown }}
+          <div class="nav-dropdown">
+            <button type="button" class="dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+              其他 <span class="caret" aria-hidden="true"></span>
+            </button>
+            <ul class="dropdown-menu">
+              {{- range . }}
+              <li>
+                <a href="{{ .url }}" target="_blank" rel="noopener noreferrer">
+                  {{ .name }}
+                  <svg class="icon icon-xs" aria-hidden="true"><use href="#i-external"></use></svg>
+                </a>
+              </li>
+              {{- end }}
+            </ul>
+          </div>
+          {{- end }}
+
+          {{- if site.Params.darkMode.enabled }}
+          <button type="button" class="theme-toggle" id="theme-toggle"
+                  aria-label="切换深浅色" title="切换深浅色">
+            <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"></use></svg>
+            <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"></use></svg>
+          </button>
+          {{- end }}
+        </div>
+      </div>
+
+    </div>
+  </nav>
+</header>

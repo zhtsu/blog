@@ -1,16 +1,37 @@
-# Change baseurl before deploy
-baseurl = "https://blog.zhtsu.cc"
-languageCode = "en-us"
-paginate = 5
-title = "zhtsu"
+# ============================================================
+#  站点基础配置
+#  latest 分支：纯模板 Hugo 站点，无历史数据
+# ============================================================
 
-# Theme i18n support
-# Available values: en, fr, id, ja, ko, pt-br, zh-cn, zh-tw, es, de, nl, it, th, el, uk, ar
-defaultContentLanguage = "en"
+baseURL = "https://blog.zhtsu.cc/"
+title = "摆大新青年"
+languageCode = "zh-cn"
+defaultContentLanguage = "zh-cn"
 
-# Set hasCJKLanguage to true if DefaultContentLanguage is in [zh-cn ja ko]
-# This will make .Summary and .WordCount behave correctly for CJK languages.
-hasCJKLanguage = false
+# 中文内容必须开启，否则 .Summary / .WordCount 对 CJK 判断失准
+hasCJKLanguage = true
 
-# Change it to your Disqus shortname before using
-disqusShortname = "zhtsu"
+# 分页：文章列表每页条数
+paginate = 8
+
+# 生成摘要，供列表卡片使用
+summaryLength = 80
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+# 输出格式定义：供前端全文检索使用的 JSON 索引 -> /search.json
+[outputFormats.SearchIndex]
+  mediaType = "application/json"
+  baseName = "search"
+  isPlainText = true
+  notAlternative = true
+
+[outputs]
+  home = ["HTML", "RSS", "SearchIndex"]
+
+[sitemap]
+  changefreq = "weekly"
+  priority = 0.5
+  filename = "sitemap.xml"

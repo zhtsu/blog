@@ -1,3 +1,7 @@
 public
 resources
 .vscode
+.hugo_build.lock
+
+# 设计参考用的原始静态站点拷贝，不入库
+temp

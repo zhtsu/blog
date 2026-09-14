@@ -1,0 +1,13 @@
+{{- /* 浮动操作按钮：回到顶部 + 看板娘开关（扩展功能） */ -}}
+<div class="float-actions">
+  {{- if site.Params.live2d.enabled }}
+  <button type="button" class="float-btn" id="live2d-toggle"
+          aria-label="显示或隐藏看板娘" title="显示 / 隐藏看板娘">
+    <svg class="icon" aria-hidden="true"><use href="#i-user"></use></svg>
+  </button>
+  {{- end }}
+  <button type="button" class="float-btn" id="back-to-top"
+          aria-label="回到顶部" title="回到顶部" hidden>
+    <svg class="icon" aria-hidden="true"><use href="#i-chevron-up"></use></svg>
+  </button>
+</div>

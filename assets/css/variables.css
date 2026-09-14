@@ -1,0 +1,49 @@
+/* ============================================================
+   设计令牌
+   取值直接对齐原站 temp/web/css/index-style.css 的 :root
+   ============================================================ */
+:root {
+  /* 网页主要可视部分最大宽度（原站 --max-width） */
+  --max-width: 1040px;
+
+  /* 卡片（原站 --card-color / --card-font-color / --card-radius / --card-shadow） */
+  --card-color: #f8f8f8;
+  --card-font-color: #777777;
+  --card-link-active-color: #777777;
+  --card-radius: 5px;
+  --card-shadow: 0px 3px 7px 0px rgb(0 0 0 / 15%);
+  --card-hover-shadow: 0px 3px 7px 0px rgb(0 0 0 / 35%);
+
+  /* 页面底色（原站 .blog background） */
+  --body-bg: #dadada;
+
+  /* 以下为原站没写死、但重构成模板后必须定的量 */
+  --surface: var(--card-color);
+  --surface-2: #ffffff;
+  --text: #3a3a3a;
+  --text-muted: var(--card-font-color);
+  --heading: #2c2c2c;
+  --border: #e2e2e2;
+  --link: #4a76a8;
+  --link-hover: #2f5c8f;
+  --accent: #4a76a8;
+  --accent-soft: rgb(74 118 168 / 12%);
+
+  --code-bg: #f2f2f2;
+  --code-border: #e4e4e4;
+
+  --nav-bg: var(--card-color);
+  --nav-height: 60px;
+  --gap: 10px;
+
+  --radius: var(--card-radius);
+  --shadow: var(--card-shadow);
+  --shadow-hover: var(--card-hover-shadow);
+
+  --transition: 160ms ease;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+    "Microsoft YaHei Mono", monospace;
+}

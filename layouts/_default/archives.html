@@ -1,0 +1,42 @@
+{{ define "main" }}
+{{- $pages := where site.RegularPages "Section" "post" -}}
+
+<main id="main">
+  <div class="article-box">
+
+    <header class="list-head card">
+      <h1 class="list-title">
+        <svg class="icon icon-xs" aria-hidden="true"><use href="#i-calendar"></use></svg>
+        归档
+      </h1>
+      {{- with .Content }}<div class="list-desc">{{ . }}</div>{{ end }}
+      <p class="list-count">共 {{ len $pages }} 篇</p>
+    </header>
+
+    {{- if $pages }}
+    {{- /* .Pages 已按日期倒序，按年分组即可得到时间线 */}}
+    <div class="card archive-card">
+      {{- range $pages.GroupByDate "2006" }}
+      <h2 class="archive-year">{{ .Key }} 年 <span class="badge">{{ len .Pages }}</span></h2>
+      <ul class="archive-list">
+        {{- range .Pages }}
+        <li class="archive-item">
+          <span class="archive-date">{{ .Date.Format "01-02" }}</span>
+          <a class="archive-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
+        </li>
+        {{- end }}
+      </ul>
+      {{- end }}
+    </div>
+    {{- else }}
+    <div class="empty-state card">
+      <p class="empty-title">还没有文章</p>
+      <p class="empty-desc">这里是空的，写点东西就有了。</p>
+    </div>
+    {{- end }}
+
+  </div>
+
+  {{ partial "sidebar.html" . }}
+</main>
+{{ end }}

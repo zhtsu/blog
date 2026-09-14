@@ -1,149 +1,126 @@
-# Pages placed under these sections will be shown on homepage and archive page.
-mainSections = ["post"]
-# Output page's full content in RSS.
-rssFullContent = true
+# ============================================================
+#  模板参数 —— 全部可改，模板里通过 site.Params.* 读取
+# ============================================================
+
+# 站点副标题，显示在页头 logo 下方
+subtitle = "瞎写点东西的地方"
+
+# 浏览器标签页 / 卡片图标
 favicon = "/favicon.png"
 
+# 首页每页文章数（覆盖 config.toml 的 paginate）
+pagerSize = 8
+
+# 文章正文页显示 "本文共 N 字"
+showWordCount = true
+# 文章正文页显示预计阅读时间
+showReadingTime = true
+# 文章正文页显示目录
+showTOC = true
+# 目录默认是否展开
+tocOpen = false
+
+# 文章卡片是否显示摘要
+showSummary = true
+
+# 页脚
 [footer]
-since = 2020
-customText = ""
+  since = 2020
+  customText = ""
 
+# 日期显示格式（Hugo 使用 Go 的时间布局）
 [dateFormat]
-published = "Jan 02, 2006"
-lastUpdated = "Jan 02, 2006 15:04 MST"
+  published = "2006年01月02日"
+  list = "2006-01-02"
 
-[sidebar]
-emoji = "🌴"
-subtitle = "Vanishment this world !"
+# ---- 导航菜单 ----
+[[main]]
+  name = "主页"
+  url = "/"
+  weight = 10
 
-[sidebar.avatar]
-enabled = true
-local = true
-src = "img/avatar.png"
+[[main]]
+  name = "文章"
+  url = "/post/"
+  weight = 20
 
-[article]
-math = false
-readingTime = false
+[[main]]
+  name = "标签"
+  url = "/tags/"
+  weight = 30
 
-[article.license]
-enabled = false
-default = "Licensed under CC BY-NC-SA 4.0"
+[[main]]
+  name = "归档"
+  url = "/archives/"
+  weight = 40
 
-## Widgets
-[[widgets.homepage]]
-type = "search"
+[[main]]
+  name = "关于"
+  url = "/about/"
+  weight = 50
 
-[[widgets.homepage]]
-type = "archives"
+# ---- 顶栏右侧下拉（对应原站「其他」）----
+[[dropdown]]
+  name = "CSDN"
+  url = "https://blog.csdn.net/weixin_45711556"
 
-[widgets.homepage.params]
-limit = 5
+[[dropdown]]
+  name = "Gitee"
+  url = "https://gitee.com/zhtsu"
 
-[[widgets.homepage]]
-type = "categories"
+[[dropdown]]
+  name = "GitHub"
+  url = "https://github.com/zhtsu"
 
-[widgets.homepage.params]
-limit = 10
+# ---- 侧栏：友情链接 ----
+[[links]]
+  name = "Bootstrap"
+  url = "https://v3.bootcss.com/"
 
-[[widgets.homepage]]
-type = "tag-cloud"
+[[links]]
+  name = "TTK"
+  url = "https://www.tatakai.cn/"
 
-[widgets.homepage.params]
-limit = 10
+[[links]]
+  name = "zhtsu"
+  url = "https://www.zhtsu.cn/"
 
-[[widgets.page]]
-type = "toc"
+# ---- 侧栏：个人卡片 ----
+[profile]
+  enabled = true
+  title = "关于我"
+  # 头像放在 assets/img/ 下（会被 Hugo 处理），或换成外链
+  avatar = ""
+  bio = "写代码，也写点别的。"
 
-[opengraph.twitter]
-site = ""
-card = "summary_large_image"
+# ---- 看板娘（Live2D）----
+[live2d]
+  enabled = true
+  # 小于该宽度不加载看板娘（原站逻辑为 768）
+  minWidth = 768
+  # 是否使用本地 vendor 的资源（static/live2d/），false 则走 CDN
+  local = true
+  # CDN 兜底地址
+  cdnPath = "https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/"
+  # 模型 API
+  modelApi = "https://cdn.jsdelivr.net/gh/fghrsh/live2d_api/"
 
-[defaultImage.opengraph]
-enabled = false
-local = false
-src = ""
-
-[colorScheme]
-toggle = true
-default = "auto"
-
-[imageProcessing.cover]
-enabled = true
-
-[imageProcessing.content]
-enabled = true
-
-## Comments
+# ---- 评论（默认关闭，按需开启）----
 [comments]
-enabled = true
-provider = "disqus"
+  enabled = false
+  provider = "giscus"
+  [comments.giscus]
+    repo = ""
+    repoID = ""
+    category = ""
+    categoryID = ""
+    mapping = "pathname"
+    lang = "zh-CN"
 
-[comments.disqusjs]
-shortname = ""
-apiUrl = ""
-apiKey = ""
-admin = ""
-adminLabel = ""
-
-[comments.utterances]
-repo = ""
-issueTerm = "pathname"
-label = ""
-
-[comments.remark42]
-host = ""
-site = ""
-locale = ""
-
-[comments.vssue]
-platform = ""
-owner = ""
-repo = ""
-clientId = ""
-clientSecret = ""
-autoCreateIssue = false
-
-[comments.waline]
-serverURL = ""
-lang = ""
-visitor = ""
-avatar = ""
-emoji = ["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"]
-requiredMeta = ["name", "email", "url"]
-placeholder = ""
-
-[comments.waline.locale]
-admin = "Admin"
-
-[comments.twikoo]
-envId = ""
-region = ""
-path = ""
-lang = ""
-
-[comments.cactus]
-defaultHomeserverUrl = "https://matrix.cactus.chat:8448"
-serverName = "cactus.chat"
-siteName = ""
-
-[comments.giscus]
-repo = ""
-repoID = ""
-category = ""
-categoryID = ""
-mapping = ""
-lightTheme = ""
-darkTheme = ""
-reactionsEnabled = 1
-emitMetadata = 0
-
-[comments.gitalk]
-owner = ""
-admin = ""
-repo = ""
-clientID = ""
-clientSecret = ""
-
-[comments.cusdis]
-host = ""
-id = ""
+# ---- 暗色模式 ----
+[darkMode]
+  enabled = true
+  # auto | light | dark
+  default = "auto"
+  # 显示切换按钮
+  toggle = true

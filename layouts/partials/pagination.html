@@ -1,0 +1,45 @@
+{{- /* 分页组件 —— 对应原站 .pagination
+       原站是 7 个假链接，这里接 Hugo 真实分页器 */ -}}
+{{- $p := . -}}
+{{- if gt $p.TotalPages 1 }}
+<nav class="pager-wrap" aria-label="分页导航">
+  <ul class="pagination">
+    {{- if $p.HasPrev }}
+    <li class="pager-item">
+      <a class="page-nav-item" href="{{ $p.First.URL }}" aria-label="首页" title="首页">
+        <svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-left"></use></svg><svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-left"></use></svg>
+      </a>
+    </li>
+    <li class="pager-item">
+      <a class="page-nav-item" href="{{ $p.Prev.URL }}" rel="prev" aria-label="上一页" title="上一页">
+        <svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-left"></use></svg>
+      </a>
+    </li>
+    {{- else }}
+    <li class="pager-item disabled"><span class="page-nav-item"><svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-left"></use></svg></span></li>
+    {{- end }}
+
+    {{- range $p.Pagers }}
+    <li class="pager-item{{ if eq . $p }} active{{ end }}">
+      <a class="page-nav-item" href="{{ .URL }}"{{ if eq . $p }} aria-current="page"{{ end }}>{{ .PageNumber }}</a>
+    </li>
+    {{- end }}
+
+    {{- if $p.HasNext }}
+    <li class="pager-item">
+      <a class="page-nav-item" href="{{ $p.Next.URL }}" rel="next" aria-label="下一页" title="下一页">
+        <svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-right"></use></svg>
+      </a>
+    </li>
+    <li class="pager-item">
+      <a class="page-nav-item" href="{{ $p.Last.URL }}" aria-label="末页" title="末页">
+        <svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-right"></use></svg><svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-right"></use></svg>
+      </a>
+    </li>
+    {{- else }}
+    <li class="pager-item disabled"><span class="page-nav-item"><svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-right"></use></svg></span></li>
+    {{- end }}
+  </ul>
+  <p class="pager-info">第 {{ $p.PageNumber }} / {{ $p.TotalPages }} 页 · 共 {{ $p.TotalPages }} 页</p>
+</nav>
+{{- end }}

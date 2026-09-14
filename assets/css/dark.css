@@ -1,0 +1,70 @@
+/* ============================================================
+   暗色模式（扩展功能）
+   原站是写死的浅色 #dadada / #f8f8f8。
+   这里只覆盖 variables.css 里定义的令牌，组件层无需改动，
+   因此暗色下依然是「卡片 + 阴影 + 圆角」的同一套语言。
+   ============================================================ */
+
+[data-theme="dark"] {
+  --body-bg: #16181c;
+
+  --card-color: #1f2227;
+  --card-font-color: #9aa1ab;
+  --card-link-active-color: #9aa1ab;
+  --card-shadow: 0px 3px 7px 0px rgb(0 0 0 / 45%);
+  --card-hover-shadow: 0px 3px 10px 0px rgb(0 0 0 / 65%);
+
+  --surface: var(--card-color);
+  --surface-2: #262a30;
+  --text: #c8ced6;
+  --text-muted: #8b929c;
+  --heading: #e8ecf1;
+  --border: #2f343b;
+
+  --link: #7aa7d8;
+  --link-hover: #a3c6ee;
+  --accent: #7aa7d8;
+  --accent-soft: rgb(122 167 216 / 14%);
+
+  --code-bg: #1a1d21;
+  --code-border: #2c3138;
+
+  --nav-bg: var(--card-color);
+}
+
+[data-theme="dark"] code {
+  color: #ef8fa4;
+}
+
+[data-theme="dark"] .post-content tbody tr:nth-child(even) {
+  background: rgb(255 255 255 / 2.5%);
+}
+
+[data-theme="dark"] .pin-badge {
+  background: #b8443a;
+}
+
+[data-theme="dark"] .post-content img {
+  opacity: 0.92;
+}
+
+/* 原站用 Bootstrap3 组件时会出现白底残留，这里统一压掉 */
+[data-theme="dark"] .navbar-default {
+  background-color: var(--card-color);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .btn-default {
+  background-color: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+/* 滚动条跟随主题 */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root {
+  color-scheme: light;
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="{{ site.LanguageCode | default "zh-cn" }}" data-theme="light">
+{{ partial "head.html" . }}
+<body class="blog{{ if .IsPage }} page-single{{ else if .IsHome }} page-home{{ else }} page-list{{ end }}">
+{{ partial "icon-sprite.html" . }}
+
+{{ partial "header.html" . }}
+
+{{- /* 这一层容器控制左右边距，对齐原站 .blog-box */}}
+<div class="blog-box">
+  {{- block "main" . }}{{ end }}
+  <div class="clear"></div>
+  {{ partial "footer.html" . }}
+</div>
+
+{{ partial "back-to-top.html" . }}
+
+{{- /* 看板娘：只输出配置节点，加载器在下面的 main.js 里 */}}
+{{ partial "live2d.html" . }}
+
+<script>
+  window.__BLOG__ = {
+    searchIndex: {{ "search.json" | relURL }},
+    searchPage: {{ "search/" | relURL }},
+    tocOpen: {{ site.Params.tocOpen | default false }},
+    dateFormat: {{ site.Params.dateFormat.list | default "2006-01-02" }}
+  };
+</script>
+{{- /* 全局脚本：assets/js/ 下的文件必须经 Hugo Pipes 输出，static/ 里没有副本，
+       直接写 /js/xxx.js 会 404。这里打包 + 压缩 + 指纹，合并成一个请求。 */}}
+{{- $main := slice
+      (resources.Get "js/theme.js")
+      (resources.Get "js/nav.js")
+      (resources.Get "js/live2d-loader.js")
+    | resources.Concat "js/main.js" | minify | fingerprint }}
+<script defer src="{{ $main.RelPermalink }}" integrity="{{ $main.Data.Integrity }}"></script>
+{{- if .IsPage }}
+{{- $toc := resources.Get "js/toc.js" | minify | fingerprint }}
+<script defer src="{{ $toc.RelPermalink }}" integrity="{{ $toc.Data.Integrity }}"></script>
+{{- end }}
+{{- block "scripts" . }}{{ end }}
+</body>
+</html>

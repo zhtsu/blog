@@ -1,0 +1,80 @@
+/* ============================================================
+   与 Bootstrap 3.4.1 的兼容层
+   原站基于 Bootstrap3 写样式，本站保留了它的 CDN 以维持栅格/
+   组件观感，但导航已自绘，因此需要显式解除 Bootstrap 对
+   .navbar / .pagination / .badge 等的默认样式干扰。
+   ============================================================ */
+
+/* 自绘导航，禁用 Bootstrap 的 navbar 默认外观 */
+.navbar.navbar-default {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  margin-bottom: 0;
+  min-height: 0;
+}
+
+/* 原站的分页用的是 Bootstrap .pagination，这里已自绘 */
+.pagination > li > a,
+.pagination > li > span {
+  all: unset;
+}
+
+.pagination > li {
+  display: inline-block;
+}
+
+/* 让自绘 .page-nav-item 完全接管，不再继承 Bootstrap 的边框/配色 */
+.pagination > li > a.page-nav-item,
+.pagination > li > span.page-nav-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 9px;
+  background-color: var(--card-color);
+  border: none;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  color: var(--card-font-color) !important;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.pagination > li.active > a.page-nav-item {
+  background: var(--accent);
+  color: #fff !important;
+}
+
+/* 侧栏列表用了 Bootstrap 的 nav-pills nav-stacked，去掉其默认态 */
+.nav-pills > li > a {
+  border-radius: 0;
+}
+
+.nav-pills > li > a:hover,
+.nav-pills > li > a:focus {
+  background-color: var(--accent-soft);
+}
+
+.nav-pills > li.active > a {
+  background-color: var(--accent);
+}
+
+/* Bootstrap 的 .badge 是深灰胶囊，改为配色令牌驱动 */
+.badge {
+  background-color: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* container-fluid 在原站承担了 1040px 居中，这里由 .nav-inner 接管 */
+.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* 代码高亮（Chroma）：暗色的 token 颜色由 head.html 里生成的
+   chroma-dark.css 负责，这里只兜住代码块底色 */
+[data-theme="dark"] .post-content .chroma {
+  background: var(--code-bg);
+}

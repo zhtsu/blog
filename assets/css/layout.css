@@ -1,0 +1,371 @@
+/* ============================================================
+   导航栏
+   原站是 Bootstrap3 .navbar.navbar-default，白底 + 直角。
+   这里保持同一视觉语言（圆角、卡片阴影、定宽），
+   但自绘结构以支持：真·汉堡菜单、搜索框、暗色切换、下拉。
+   ============================================================ */
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--nav-bg);
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: var(--shadow);
+  transition: background-color var(--transition), box-shadow var(--transition);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--nav-height);
+  padding: 0 14px;
+}
+
+/* ---------- 品牌区 ---------- */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.brand-link {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  color: var(--heading);
+}
+
+.brand-link:hover,
+.brand-link:focus {
+  color: var(--accent);
+}
+
+.brand-name {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ---------- 汉堡按钮：桌面隐藏 ---------- */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.nav-toggle .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.nav-toggle .icon-close {
+  display: none;
+}
+
+.nav-toggle[aria-expanded="true"] .icon-menu {
+  display: none;
+}
+
+.nav-toggle[aria-expanded="true"] .icon-close {
+  display: block;
+}
+
+/* ---------- 折叠区 ---------- */
+.nav-collapse {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  gap: 12px;
+  min-width: 0;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu .nav-item a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 14px;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.nav-menu .nav-item a:hover,
+.nav-menu .nav-item a:focus {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.nav-menu .nav-item.active a {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ---------- 右侧操作区 ---------- */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+/* 搜索框 */
+.nav-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  height: 34px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  color: var(--text-muted);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.nav-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.nav-search input[type="search"] {
+  width: 130px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: width var(--transition);
+}
+
+.nav-search input[type="search"]:focus {
+  width: 180px;
+}
+
+.nav-search input::placeholder {
+  color: var(--text-muted);
+}
+
+/* 下拉菜单（原站「其他」） */
+.nav-dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition);
+}
+
+.dropdown-toggle:hover,
+.dropdown-toggle[aria-expanded="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.dropdown-toggle .caret {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+  transition: transform var(--transition);
+}
+
+.dropdown-toggle[aria-expanded="true"] .caret {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown .dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 150px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-hover);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
+}
+
+.nav-dropdown.open .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-dropdown .dropdown-menu a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 3px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.nav-dropdown .dropdown-menu a:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* 暗色切换按钮 */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: rotate(-18deg);
+}
+
+.theme-toggle .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.theme-toggle .icon-sun {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle .icon-sun {
+  display: block;
+}
+
+[data-theme="dark"] .theme-toggle .icon-moon {
+  display: none;
+}
+
+/* ---------- 响应式：<=768px 折叠为汉堡菜单 ---------- */
+@media (max-width: 768px) {
+  .nav-inner {
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    row-gap: 8px;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+
+  .nav-collapse {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    flex-basis: 100%;
+    gap: 10px;
+    padding-top: 4px;
+  }
+
+  .nav-collapse.open {
+    display: flex;
+  }
+
+  .nav-menu {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .nav-menu .nav-item a {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+
+  .nav-actions {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .nav-search {
+    flex: 1 1 160px;
+  }
+
+  .nav-search input[type="search"],
+  .nav-search input[type="search"]:focus {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .nav-dropdown {
+    position: static;
+  }
+
+  .nav-dropdown .dropdown-menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    display: none;
+    box-shadow: none;
+    margin-top: 6px;
+  }
+
+  .nav-dropdown.open .dropdown-menu {
+    display: block;
+  }
+}
+
+/* 窄屏收紧字号 */
+@media (max-width: 480px) {
+  .brand-name {
+    font-size: 17px;
+  }
+
+  .brand-sub {
+    display: none;
+  }
+}

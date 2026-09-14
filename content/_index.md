@@ -1,8 +1,6 @@
 ---
-menu:
-    main:
-        name: Home
-        weight: 1
-        params:
-            icon: home
+title: "首页"
 ---
+
+这里是站点简介，直接写在 `content/_index.md` 的正文里，会渲染在文章列表上方。
+不需要的话把本文件的正文清空即可。

@@ -1,0 +1,14 @@
+{{- /* 正文页目录：由 .TableOfContents 生成，配合 assets/js/toc.js 做滚动高亮 */ -}}
+{{- if and site.Params.showTOC .TableOfContents }}
+<nav class="toc-card card" aria-labelledby="toc-title">
+  <p class="toc-head" id="toc-title">
+    <svg class="icon icon-xs" aria-hidden="true"><use href="#i-menu"></use></svg> 目录
+    <button type="button" class="toc-toggle" id="toc-toggle"
+            aria-expanded="{{ if site.Params.tocOpen }}true{{ else }}false{{ end }}"
+            aria-controls="toc-body">收起</button>
+  </p>
+  <div class="toc-body{{ if not site.Params.tocOpen }} collapsed{{ end }}" id="toc-body">
+    {{ .TableOfContents }}
+  </div>
+</nav>
+{{- end }}

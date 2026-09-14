@@ -1,6 +1,9 @@
-# Rename this file to languages.toml to enable multilingual support
-[en]
-languageName = "English"
-languagedirection = "ltr"
-title = "Example Site"
-weight = 1
+# 本文件以 _ 开头，Hugo 不会读取（避免与 defaultContentLanguage 冲突）。
+# 需要多语言时改名为 languages.toml 并填写，例如：
+#
+# [zh-cn]
+#   languageName = "简体中文"
+#   weight = 1
+#   title = "摆大新青年"
+#   [zh-cn.params]
+#     subtitle = "瞎写点东西的地方"
