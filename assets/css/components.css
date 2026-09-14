@@ -588,11 +588,6 @@
   font-weight: 600;
 }
 
-.footer-sep {
-  margin: 0 6px;
-  color: var(--border);
-}
-
 /* ---------- 归档时间线 ---------- */.archive-card {
   padding: 20px;
 }
@@ -641,11 +636,6 @@
 
 .archive-link:hover {
   color: var(--accent);
-}
-
-/* ---------- 关于页 ---------- */
-.about-card {
-  padding: 22px;
 }
 
 /* ---------- 404 ---------- */

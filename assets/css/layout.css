@@ -14,7 +14,9 @@
   padding: 0 var(--gap);
 }
 
-/* 顶部导航容器 */
+/* 顶部导航容器与页脚容器：定宽 + 居中。
+   .header-item 是旧结构的遗留 token（模板里已不再输出），
+   保留在组合选择器里不影响结果，.nav-inner 才是生效的那个。 */
 .header-item,
 .nav-inner {
   max-width: var(--max-width);

@@ -41,7 +41,7 @@
           {{- with partial "page-body.html" $ }}<p class="term-desc">{{ . | plainify | truncate 60 }}</p>{{ end }}
         </li>
         {{- end }}
-      </div>
+      </ul>
       {{- else }}
       <div class="empty-state card">
         <p class="empty-title">还没有内容</p>

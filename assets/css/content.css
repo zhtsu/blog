@@ -176,15 +176,6 @@
   background: rgb(0 0 0 / 2%);
 }
 
-/* 脚注 */
-.post-content .footnotes {
-  margin-top: 2em;
-  padding-top: 1em;
-  border-top: 1px solid var(--border);
-  color: var(--text-muted);
-  font-size: 13.5px;
-}
-
 /* ---------- 目录 ---------- */
 .toc-card {
   margin-bottom: 18px;
@@ -266,11 +257,6 @@
   border-top: 1px solid var(--border);
   color: var(--text-muted);
   font-size: 13px;
-}
-
-.post-updated,
-.post-license {
-  margin: 0 0 10px;
 }
 
 /* 上下篇 */
