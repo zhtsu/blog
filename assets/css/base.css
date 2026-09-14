@@ -112,8 +112,26 @@ hr {
   border: 0;
 }
 
-/* 键盘焦点可见 */
+/* 键盘焦点可见。
+   单圈强调色 outline 就够了；不加 border-radius，
+   否则会覆盖元素自身的圆角形状（胶囊按钮会被改成直角）。 */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* 关掉移动端点击时浏览器自带的半透明高亮方块，
+   那是 UA 默认行为，不是我们想要的状态反馈。 */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 自定义控件与链接不参与文本选择，避免长按/拖拽时出现蓝色选区 */
+.nav-toggle,
+.theme-toggle,
+.float-btn,
+.pager-item .page-nav-item,
+.search-submit {
+  user-select: none;
+  -webkit-user-select: none;
 }

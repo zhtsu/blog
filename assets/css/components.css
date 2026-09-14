@@ -59,7 +59,6 @@
     box-shadow: var(--card-hover-shadow);
     transform: translateY(-2px);
   }
-
   .post-card:hover::after {
     opacity: 1;
   }
@@ -241,6 +240,13 @@
 .tag-chip:hover {
   background: var(--accent-soft);
   color: var(--accent);
+}
+
+/* 按下反馈：轻微内缩，给触屏一个「按到了」的即时确认。
+   用 scale 而不是改背景色，避免整块卡片闪一下。 */
+.post-card:active {
+  transform: translateY(0) scale(0.994);
+  transition-duration: 90ms;
 }
 
 /* ---------- 文章卡片：窄屏改为上下堆叠 ---------- */
@@ -426,49 +432,7 @@
   font-size: 12.5px;
 }
 
-/* 个人卡片 */
-.profile-card {
-  padding: 16px;
-  text-align: center;
-}
-
-.profile-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 8px;
-}
-
-.profile-avatar-fallback {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  margin-bottom: 8px;
-  background: var(--accent-soft);
-  border-radius: 50%;
-  color: var(--accent);
-}
-
-.profile-avatar-fallback .icon {
-  width: 30px;
-  height: 30px;
-}
-
-.profile-title {
-  margin: 0 0 4px;
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--heading);
-}
-
-.profile-bio {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 12.5px;
-}
+/* 个人卡片样式已随「关于我」卡片一起移除 */
 
 /* ---------- 标签 / 分类总览网格 ---------- */
 .term-grid {

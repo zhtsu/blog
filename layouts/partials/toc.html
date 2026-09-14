@@ -1,13 +1,16 @@
-{{- /* 正文页目录：由 .TableOfContents 生成，配合 assets/js/toc.js 做滚动高亮 */ -}}
+{{- /* 正文页目录：由 .TableOfContents 生成，配合 assets/js/toc.js 做滚动高亮。
+       默认折叠状态由 params.tocOpen 决定，按钮文案必须与之一致，
+       否则首屏会显示「收起」而目录其实是折叠的。 */ -}}
+{{- $open := site.Params.tocOpen | default false -}}
 {{- if and site.Params.showTOC .TableOfContents }}
 <nav class="toc-card card" aria-labelledby="toc-title">
   <p class="toc-head" id="toc-title">
     <svg class="icon icon-xs" aria-hidden="true"><use href="#i-menu"></use></svg> 目录
     <button type="button" class="toc-toggle" id="toc-toggle"
-            aria-expanded="{{ if site.Params.tocOpen }}true{{ else }}false{{ end }}"
-            aria-controls="toc-body">收起</button>
+            aria-expanded="{{ if $open }}true{{ else }}false{{ end }}"
+            aria-controls="toc-body">{{ if $open }}收起{{ else }}展开{{ end }}</button>
   </p>
-  <div class="toc-body{{ if not site.Params.tocOpen }} collapsed{{ end }}" id="toc-body">
+  <div class="toc-body{{ if not $open }} collapsed{{ end }}" id="toc-body">
     {{ .TableOfContents }}
   </div>
 </nav>

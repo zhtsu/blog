@@ -44,16 +44,19 @@ showCover = true
 [[main]]
   name = "文章"
   url = "/post/"
+  section = "post"
   weight = 20
 
 [[main]]
   name = "标签"
   url = "/tags/"
+  section = "tags"
   weight = 30
 
 [[main]]
   name = "归档"
   url = "/archives/"
+  section = "archives"
   weight = 40
 
 [[main]]
@@ -69,14 +72,6 @@ showCover = true
 [[links]]
   name = "GOOBLOG"
   url = "https://www.blog.googookuki.cn/#/home"
-
-# ---- 侧栏：个人卡片 ----
-[profile]
-  enabled = true
-  title = "关于我"
-  # 头像：留空则显示内置图标占位
-  avatar = ""
-  bio = ""
 
 # ---- 暗色模式 ----
 [darkMode]

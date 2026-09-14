@@ -65,6 +65,48 @@
   background: rgb(255 255 255 / 6%);
 }
 
+/* 深色下强调色偏亮，焦点环换成更醒目的浅色 */
+[data-theme="dark"] :focus-visible {
+  outline-color: #a3c6ee;
+}
+
+/* 搜索输入框：浅色样式在深色下会变成刺眼的白块 */
+[data-theme="dark"] .search-input {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+[data-theme="dark"] .search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+[data-theme="dark"] .search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Chromium 原生清除按钮在深色下是深色图标，换成浅色 */
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity var(--transition);
+  /* 用一个白色叉号遮出清除图标 */
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 6l12 12M18 6L6 18' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/></svg>") center / 12px no-repeat;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 6l12 12M18 6L6 18' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/></svg>") center / 12px no-repeat;
+}
+
+.search-input::-webkit-search-cancel-button:hover {
+  opacity: 1;
+}
+
 /* 滚动条跟随主题 */
 [data-theme="dark"] {
   color-scheme: dark;

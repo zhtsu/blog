@@ -1,20 +1,5 @@
-{{/* 右侧栏卡片组：对应原站 .aside-box 内的三个 .card。原站标签/友链是 JS 硬编码，这里全部由 Hugo 数据生成。 */}}
+{{/* 右侧栏卡片组。原站标签/友链是 JS 硬编码，这里全部由 Hugo 数据生成。 */}}
 <aside class="aside-box">
-
-  {{- /* 个人卡片：原站没有，属于「扩展」 */ -}}
-  {{- if site.Params.profile.enabled }}
-  <div class="card profile-card">
-    {{- with site.Params.profile.avatar }}
-    <img class="profile-avatar" src="{{ . | relURL }}" alt="{{ site.Params.profile.title }}" loading="lazy">
-    {{- else }}
-    <span class="profile-avatar profile-avatar-fallback" aria-hidden="true">
-      <svg class="icon" aria-hidden="true"><use href="#i-user"></use></svg>
-    </span>
-    {{- end }}
-    <p class="profile-title">{{ site.Params.profile.title }}</p>
-    {{- with site.Params.profile.bio }}<p class="profile-bio">{{ . }}</p>{{ end }}
-  </div>
-  {{- end }}
 
   {{- /* 文章标签卡片 */ -}}
   <div class="card">

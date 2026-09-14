@@ -21,9 +21,24 @@
       <div class="nav-collapse" id="top-nav">
         <ul class="nav-menu">
           {{- $cur := .RelPermalink }}
+          {{- $sec := .Section }}
+          {{- $kind := .Kind }}
           {{- range site.Params.main }}
-          <li class="nav-item{{ if and (eq .url "/") (eq $cur "/") }} active{{ else if and (ne .url "/") (hasPrefix $cur .url) }} active{{ end }}">
-            <a href="{{ .url | relURL }}">{{ .name }}</a>
+            {{- /* 高亮判定，按优先级：
+                 1) 菜单项声明了 section（如 文章 -> post），则文章详情页 /p/<slug>/
+                    也能正确归属，不会因为 URL 前缀是 /p/ 而漏掉；
+                 2) URL 完全相等（首页、独立页面）；
+                 3) URL 前缀匹配。 */}}
+            {{- $active := false }}
+            {{- with .section }}
+              {{- if eq $sec . }}{{ $active = true }}{{ end }}
+            {{- end }}
+            {{- if eq $cur .url }}{{ $active = true }}{{ end }}
+            {{- if and (ne .url "/") (ne $cur "/") (hasPrefix $cur .url) (or (ne $kind "page") (eq .url $cur)) }}
+              {{- $active = true }}
+            {{- end }}
+          <li class="nav-item{{ if $active }} active{{ end }}">
+            <a href="{{ .url | relURL }}"{{ if $active }} aria-current="page"{{ end }}>{{ .name }}</a>
           </li>
           {{- end }}
         </ul>
