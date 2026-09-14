@@ -11,11 +11,11 @@
     </header>
 
     {{- if $pages }}
-    <ul class="article-list">
+    <div class="article-list">
       {{- range $pages }}
       {{ partial "article-card.html" (dict "page" . "showSummary" site.Params.showSummary) }}
       {{- end }}
-    </ul>
+    </div>
     {{- else }}
     <div class="empty-state card">
       <p class="empty-title">这个栏目还没有文章</p>

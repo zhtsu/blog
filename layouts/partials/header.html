@@ -1,6 +1,6 @@
 {{- /* 顶部导航栏
-       对应原站 design 的 #header > .navbar，
-       但改用自绘的响应式导航（原站 Bootstrap3 折叠菜单在移动端体验不佳）。 */ -}}
+       自绘的响应式导航。交互按「状态切换要快、反馈要明确」来做：
+       hover 只做轻微位移与强调色，active 用实心高亮标明当前位置。 */ -}}
 <a class="skip-link" href="#main">跳到正文</a>
 <header id="header">
   <nav class="site-nav" aria-label="主导航">
@@ -32,28 +32,10 @@
           <form class="nav-search" role="search" action="{{ "search/" | relURL }}" method="get">
             <label class="sr-only" for="nav-search-input">搜索文章</label>
             <svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg>
-            <input type="search" id="nav-search-input" name="q" placeholder="搜索文章"
+            <input type="search" id="nav-search-input" name="q" placeholder="搜索"
                    autocomplete="off" spellcheck="false">
             <button type="submit" class="sr-only">搜索</button>
           </form>
-
-          {{- with site.Params.dropdown }}
-          <div class="nav-dropdown">
-            <button type="button" class="dropdown-toggle" aria-expanded="false" aria-haspopup="true">
-              其他 <span class="caret" aria-hidden="true"></span>
-            </button>
-            <ul class="dropdown-menu">
-              {{- range . }}
-              <li>
-                <a href="{{ .url }}" target="_blank" rel="noopener noreferrer">
-                  {{ .name }}
-                  <svg class="icon icon-xs" aria-hidden="true"><use href="#i-external"></use></svg>
-                </a>
-              </li>
-              {{- end }}
-            </ul>
-          </div>
-          {{- end }}
 
           {{- if site.Params.darkMode.enabled }}
           <button type="button" class="theme-toggle" id="theme-toggle"

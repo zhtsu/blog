@@ -17,23 +17,36 @@
 --card-hover-shadow: 0px 3px 7px 0px rgb(0 0 0 / 35%);
 ```
 
-差异只有两处是刻意改的：
+**只借用了设计令牌和整体骨架**（1040px 定宽居中、左列表右侧栏、卡片底色与圆角）。
+组件本身按游戏 UI 的思路重做，不照搬原站那套 Bootstrap 默认态：
+
+- **交互状态**：hover 只做 2px 位移 + 阴影加深 + 封面轻微推近，过渡 160ms；
+  当前栏目用实心高亮；原站按钮那种"默认态 + 无位移反馈"的做法已全部移除。
+- **文章卡片**：改为「封面在左、内容在右」的两栏卡片（窄屏自动上下堆叠）。
+  信息按层级排：分类 → 日期 → 标题 → 摘要（两行截断）→ 阅读时长/标签。
+  每张卡片用所属分类的配置色作为强调色 `--accent`（顶部细线、分类名、hover 时的标题与箭头）。
+- **导航**：保留站名 + 菜单 + 搜索 + 暗色切换；滚动离开页首后底色收紧、阴影加深，
+  把导航层和内容层分开。**已去掉原站那个「其他」下拉**——它只是照抄 Bootstrap 的默认交互。
+
+两处骨架上的刻意改动：
 
 - 原站用 `float` 做左右分栏（79% + 20%），这里改成 flex + gap，避免那 1% 造成的对不齐，同时窄屏能直接降级为单列；
-- 原站 `.article-item` 写死 `height: 100px`，有摘要/标签时会溢出，这里改成 `min-height` + `padding`，密度保持一致。
+- 封面图原站只用于详情页，这里同时用于卡片列表。
 
 ## 扩展的部分
 
 | 功能 | 原站 | 现在 |
 | --- | --- | --- |
-| 响应式 | 无，1040px 定宽，手机上挤成一团 | 768px 断点，侧栏折到正文下方，导航变汉堡菜单 |
+| 响应式 | 无，1040px 定宽，手机上挤成一团 | 768px 断点，侧栏折到正文下方，卡片上下堆叠，导航变汉堡菜单 |
 | 暗色模式 | 无 | CSS 变量整体切换，跟随系统或手动选择，localStorage 持久化，首屏无白闪 |
 | 分页 | 7 个 `#` 假链接 | Hugo 真实分页器（首页/上页/页码/下页/末页） |
+| 文章卡片 | 固定 `height: 100px` 的信息条 | 封面 + 层级化信息布局 + 分类强调色 + 2px 悬浮反馈 |
 | 标签分类 | JS 里硬编码、页面是空壳 | Hugo taxonomy 真实页面 + 词条总览网格 |
 | 文章详情页 | 无 | 完整正文排版、目录滚动高亮、上下篇、代码块横向滚动、宽表格自适应 |
 | 搜索 | 死表单，无后端 | 构建期生成 `/search.json`，前端按权重全文检索 |
 | 看板娘 | CDN 加载 | 资源本地 vendor 到 `static/live2d/`，离线可用，可一键关闭，尊重 reduced-motion |
 | 图标 | font-awesome + glyphicons | 内联 SVG sprite，零字体依赖，可随主题换色 |
+| 动效偏好 | 忽略 | 交互与位移全部包在 `prefers-reduced-motion` 与 `(hover: hover)` 里 |
 
 ## 目录结构
 
@@ -54,7 +67,8 @@ layouts/
   post/list.html           文章栏目页
   partials/                head / header / footer / sidebar / article-card / pagination / toc / live2d …
 assets/
-  css/  variables → base → layout → components → content → dark → bootstrap-fix → chroma
+  css/  variables → base → layout → nav → components → content → dark → bootstrap-fix → chroma
+        （层叠顺序写死在 partials/head.html 的 slice 列表里，漏一个就是整层样式消失）
   js/   theme / nav / toc / search / live2d-loader
 static/
   live2d/              看板娘整套资源（含上游 LICENSE）
@@ -139,6 +153,17 @@ $css = Get-Content (Get-ChildItem public\css -Filter 'site.min.*')[0].FullName -
 期望看到 `.header-item,.nav-inner` / `#main` / `#footer` 三条带 `max-width:var(--max-width)` 与 `margin:...auto` 的规则——它们就是"1040px 定宽居中"的全部实现。
 
 > 另外：无头 Chrome 在本机沙箱里跑不起来（`mojo platform_channel` 被拒绝，程序间命名管道被封），所以不要依赖浏览器截图做自动校验。
+
+### 校验产物时小心 minify 改了写法
+
+`hugo --minify` 会把 `style="--accent: #176B87"` 压成 `style=--accent:#176B87`（去掉引号、去掉空格）。
+如果按带引号的原文去 grep，会得出"样式没生效"的错误结论——这个坑真实踩过。要断言就用能容忍压缩的写法，例如：
+
+```powershell
+[regex]::Matches((Get-Content public\index.html -Raw), 'style=--accent:([^ >]+)')
+```
+
+或者直接提取规则体判断，不要依赖属性引号。
 
 
 ## 部署

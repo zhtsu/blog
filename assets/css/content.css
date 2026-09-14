@@ -401,6 +401,19 @@
   border-radius: 2px;
 }
 
+/* 搜索结果卡片：搜索页没有封面，走单列紧凑版 */
+.search-hit .post-card-body {
+  padding: 15px 18px;
+}
+
+.search-hit .post-card-title {
+  font-size: 17px;
+}
+
+.search-hit .post-card-arrow {
+  display: none;
+}
+
 /* ---------- 移动端正文收紧 ---------- */
 @media (max-width: 768px) {
   .post {

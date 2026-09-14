@@ -91,17 +91,31 @@
 
     var html = items
       .map(function (it) {
+        var cat = (it.categories || []).length ? it.categories[0] : '';
+        var tags = (it.tags || [])
+          .slice(0, 3)
+          .map(function (t) {
+            return '<span class="tag-chip">' + esc(t) + '</span>';
+          })
+          .join('');
+
         return (
-          '<li class="article-item search-hit">' +
-          '<h2 class="article-title"><a href="' + esc(it.url) + '">' + highlight(it.title, terms) + '</a></h2>' +
-          '<div class="article-meta"><span class="meta-item">' + esc(it.date) + '</span>' +
-          ((it.categories || []).length
-            ? '<span class="meta-item">' + it.categories.map(esc).join(' / ') + '</span>'
-            : '') +
+          '<article class="post-card search-hit">' +
+          '<div class="post-card-body">' +
+          '<div class="post-card-top">' +
+          (cat ? '<span class="post-card-cat">' + esc(cat) + '</span>' : '') +
+          '<time class="post-card-date">' + esc(it.date) + '</time>' +
           '</div>' +
-          '<p class="article-summary">' + highlight(it.summary || '', terms) + '</p>' +
-          '<div class="article-foot"><a class="read-more" href="' + esc(it.url) + '">阅读全文 ›</a></div>' +
-          '</li>'
+          '<h2 class="post-card-title"><a href="' + esc(it.url) + '">' + highlight(it.title, terms) + '</a></h2>' +
+          '<p class="post-card-summary">' + highlight(it.summary || '', terms) + '</p>' +
+          '<div class="post-card-foot">' +
+          (tags ? '<span class="post-card-tags">' + tags + '</span>' : '') +
+          '<span class="post-card-arrow" aria-hidden="true">' +
+          '<svg class="icon icon-xs"><use href="#i-chevron-right"></use></svg>' +
+          '</span>' +
+          '</div>' +
+          '</div>' +
+          '</article>'
         );
       })
       .join('');

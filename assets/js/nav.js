@@ -1,17 +1,18 @@
 /* ============================================================
-   导航交互（扩展功能）
+   导航交互
    - 移动端汉堡菜单开合
-   - 「其他」下拉菜单
-   - 点击外部 / Esc 关闭
-   - 窗口放大回桌面尺寸时复位
+   - 滚动后导航收拢（阴影与底色加深，提示已离开页首）
+   - Esc 关闭 / 视口变化复位
    - 回到顶部按钮的显隐
    ============================================================ */
 (function () {
   'use strict';
 
+  var nav = document.querySelector('.site-nav');
   var toggle = document.getElementById('nav-toggle');
   var collapse = document.getElementById('top-nav');
 
+  // ---- 汉堡菜单 ----
   if (toggle && collapse) {
     toggle.addEventListener('click', function () {
       var open = collapse.classList.toggle('open');
@@ -20,37 +21,8 @@
     });
   }
 
-  // ---- 下拉菜单 ----
-  var dropdowns = Array.prototype.slice.call(document.querySelectorAll('.nav-dropdown'));
-
-  dropdowns.forEach(function (dd) {
-    var trigger = dd.querySelector('.dropdown-toggle');
-    if (!trigger) return;
-
-    trigger.addEventListener('click', function (e) {
-      e.stopPropagation();
-      var willOpen = !dd.classList.contains('open');
-      closeAllDropdowns();
-      dd.classList.toggle('open', willOpen);
-      trigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-    });
-  });
-
-  function closeAllDropdowns() {
-    dropdowns.forEach(function (dd) {
-      dd.classList.remove('open');
-      var t = dd.querySelector('.dropdown-toggle');
-      if (t) t.setAttribute('aria-expanded', 'false');
-    });
-  }
-
-  document.addEventListener('click', function (e) {
-    if (!e.target.closest || !e.target.closest('.nav-dropdown')) closeAllDropdowns();
-  });
-
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
-    closeAllDropdowns();
     if (toggle && collapse && collapse.classList.contains('open')) {
       collapse.classList.remove('open');
       toggle.setAttribute('aria-expanded', 'false');
@@ -61,25 +33,38 @@
   // 视口放大回桌面尺寸时，清掉移动端残留状态
   var mq = window.matchMedia('(max-width: 768px)');
   var reset = function () {
-    if (!mq.matches) {
-      closeAllDropdowns();
-      if (collapse) collapse.classList.remove('open');
+    if (!mq.matches && collapse) {
+      collapse.classList.remove('open');
       if (toggle) toggle.setAttribute('aria-expanded', 'false');
     }
   };
   if (mq.addEventListener) mq.addEventListener('change', reset);
   else if (mq.addListener) mq.addListener(reset);
 
-  // ---- 回到顶部 ----
+  // ---- 滚动状态 + 回到顶部 ----
   var topBtn = document.getElementById('back-to-top');
+  var ticking = false;
+
+  function onScrollFrame() {
+    ticking = false;
+    var y = window.scrollY;
+    if (nav) nav.classList.toggle('is-scrolled', y > 8);
+    if (topBtn) topBtn.hidden = y < 320;
+  }
+
+  function requestScrollCheck() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(onScrollFrame);
+  }
+
+  window.addEventListener('scroll', requestScrollCheck, { passive: true });
+  onScrollFrame();
+
   if (topBtn) {
-    var onScroll = function () {
-      topBtn.hidden = window.scrollY < 320;
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
     topBtn.addEventListener('click', function () {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
     });
   }
 })();

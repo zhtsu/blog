@@ -62,17 +62,8 @@ showCover = true
   weight = 50
 
 # ---- 顶栏右侧下拉 ----
-[[dropdown]]
-  name = "CSDN"
-  url = "https://blog.csdn.net/weixin_45711556"
-
-[[dropdown]]
-  name = "Gitee"
-  url = "https://gitee.com/zhtsu"
-
-[[dropdown]]
-  name = "GitHub"
-  url = "https://github.com/zhtsu"
+# 已移除：原来照抄了原站 Bootstrap 的「其他」下拉，交互只是默认态。
+# 需要外链入口的话放侧栏 links，或直接加进上面的 [[main]]。
 
 # ---- 侧栏：友情链接（沿用 main 的 content/page/links）----
 [[links]]

@@ -1,67 +1,76 @@
-{{- /* 文章卡片 —— 对应原站 .article-item
+{{- /* 文章卡片
+       设计取向：信息层级优先——封面 → 标题 → 摘要 → 元信息，
+       分类色作为贯穿整张卡片的强调色；hover 只做 2px 位移 + 阴影加深 +
+       封面轻微推近，快而克制，不做原站那种 Bootstrap 默认态。
+
        参数：page(必填), showSummary(bool), headingLevel(可选) */ -}}
 {{- $page := .page -}}
 {{- $showSummary := .showSummary | default true -}}
 {{- $h := .headingLevel | default 2 -}}
-{{- $date := $page.Date -}}
-{{- with $page.Params.lastmod }}{{ $date = . }}{{ end -}}
 {{- $cover := partial "cover-src.html" $page -}}
 
-<li class="article-item{{ if $cover }} has-cover{{ end }}">
-  {{- if $page.Params.pinned }}
-  <span class="pin-badge" title="置顶">
-    <svg class="icon icon-xs" aria-hidden="true"><use href="#i-pin"></use></svg> 置顶
-  </span>
-  {{- end }}
+{{- /* 取第一个分类的配色，作为卡片强调色。
+       直接 index 分类名在某些情况下取不到（键名大小写/空白差异），
+       所以退一步：遍历 taxonomy 词条，按忽略大小写匹配。 */ -}}
+{{- $accent := "" -}}
+{{- $cats := $page.Params.categories -}}
+{{- $first := "" -}}
+{{- with $cats }}{{ $first = index . 0 }}{{ end -}}
+{{- with $first -}}
+  {{- $want := lower (trim . " ") -}}
+  {{- range $term, $weighted := $page.Site.Taxonomies.categories -}}
+    {{- if eq (lower $term) $want -}}
+      {{- with $weighted.Page.Params.style -}}
+        {{- with .background }}{{ $accent = . }}{{ end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+<article class="post-card{{ if $cover }} has-cover{{ end }}"{{ with $accent }} style="--accent: {{ . }}"{{ end }}>
 
   {{- if and $cover site.Params.showCover }}
-  <a class="article-cover" href="{{ $page.RelPermalink }}" tabindex="-1" aria-hidden="true">
+  <a class="post-card-cover" href="{{ $page.RelPermalink }}" tabindex="-1" aria-hidden="true">
     <img src="{{ $cover }}" alt="" loading="lazy" decoding="async">
   </a>
   {{- end }}
 
-  <h{{ $h }} class="article-title">
-    <a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a>
-  </h{{ $h }}>
-
-  <div class="article-meta">
-    <span class="meta-item">
-      <svg class="icon icon-xs" aria-hidden="true"><use href="#i-calendar"></use></svg>
-      <time datetime="{{ $page.Date.Format "2006-01-02" }}">{{ $page.Date.Format (site.Params.dateFormat.list | default "2006-01-02") }}</time>
-    </span>
-    {{- if and site.Params.showReadingTime $page.ReadingTime }}
-    <span class="meta-item">
-      <svg class="icon icon-xs" aria-hidden="true"><use href="#i-clock"></use></svg>
-      {{ $page.ReadingTime }} 分钟
-    </span>
-    {{- end }}
-    {{- with $page.Params.categories }}
-    <span class="meta-item">
-      <svg class="icon icon-xs" aria-hidden="true"><use href="#i-folder"></use></svg>
-      {{- range $i, $c := . }}{{ if $i }}<span class="meta-sep">/</span>{{ end }}<a href="{{ partial "term-url.html" (dict "page" $page "taxonomy" "categories" "name" $c) }}">{{ $c }}</a>{{ end }}
-    </span>
-    {{- end }}
-  </div>
-
-  {{- if $showSummary }}
-    {{- with $page.Summary }}
-    <p class="article-summary">{{ . | plainify | truncate 120 }}</p>
-    {{- end }}
-  {{- end }}
-
-  <div class="article-foot">
-    <a class="read-more" href="{{ $page.RelPermalink }}">
-      阅读全文
-      <svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-right"></use></svg>
-    </a>
-    {{- with $page.Params.tags }}
-    <span class="article-tags">
-      {{- range . }}
-      <a class="tag-chip" href="{{ partial "term-url.html" (dict "page" $page "taxonomy" "tags" "name" .) }}">
-        <svg class="icon icon-xs" aria-hidden="true"><use href="#i-tag"></use></svg>{{ . }}
-      </a>
+  <div class="post-card-body">
+    <div class="post-card-top">
+      {{- if $page.Params.pinned }}
+      <span class="chip chip-pin" title="置顶">置顶</span>
       {{- end }}
-    </span>
+      {{- with $page.Params.categories }}
+      <span class="post-card-cat">{{ index . 0 }}</span>
+      {{- end }}
+      <time class="post-card-date" datetime="{{ $page.Date.Format "2006-01-02" }}">{{ $page.Date.Format (site.Params.dateFormat.list | default "2006-01-02") }}</time>
+    </div>
+
+    <h{{ $h }} class="post-card-title">
+      <a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a>
+    </h{{ $h }}>
+
+    {{- if $showSummary }}
+      {{- with $page.Summary }}
+      <p class="post-card-summary">{{ . | plainify | truncate 110 }}</p>
+      {{- end }}
     {{- end }}
+
+    <div class="post-card-foot">
+      {{- if and site.Params.showReadingTime $page.ReadingTime }}
+      <span class="post-card-time">
+        <svg class="icon icon-xs" aria-hidden="true"><use href="#i-clock"></use></svg>{{ $page.ReadingTime }} 分钟
+      </span>
+      {{- end }}
+      {{- with $page.Params.tags }}
+      <span class="post-card-tags">
+        {{- range first 3 . }}
+        <a class="tag-chip" href="{{ partial "term-url.html" (dict "page" $page "taxonomy" "tags" "name" .) }}">{{ . }}</a>
+        {{- end }}
+      </span>
+      {{- end }}
+      <span class="post-card-arrow" aria-hidden="true">
+        <svg class="icon icon-xs"><use href="#i-chevron-right"></use></svg>
+      </span>
+    </div>
   </div>
-</li>
+</article>

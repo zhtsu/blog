@@ -10,11 +10,11 @@
     {{- end }}
 
     {{- if $paginator.Pages }}
-    <ul class="article-list">
+    <div class="article-list">
       {{- range $paginator.Pages }}
       {{ partial "article-card.html" (dict "page" . "showSummary" site.Params.showSummary) }}
       {{- end }}
-    </ul>
+    </div>
     {{ partial "pagination.html" $paginator }}
     {{- else }}
     <div class="empty-state card">

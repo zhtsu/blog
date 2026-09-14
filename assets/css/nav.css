@@ -109,24 +109,54 @@
   padding: 0;
 }
 
+/* ---------- 导航项 ----------
+   状态区分靠「底色 + 强调色 + 2px 抬起」，位移量小、过渡快，
+   避免原站那套 Bootstrap 默认态（纯色块闪烁、无位移反馈）。 */
 .nav-menu .nav-item a {
+  position: relative;
   display: block;
-  padding: 8px 12px;
+  padding: 8px 13px;
   border-radius: var(--radius);
   color: var(--text-muted);
   font-size: 14px;
-  transition: background-color var(--transition), color var(--transition);
+  transition: background-color var(--transition), color var(--transition), transform var(--transition);
 }
 
-.nav-menu .nav-item a:hover,
-.nav-menu .nav-item a:focus {
-  background: var(--accent-soft);
-  color: var(--accent);
+.nav-menu .nav-item a::after {
+  content: "";
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  bottom: 4px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  opacity: 0;
+  transform: scaleX(0.4);
+  transition: opacity var(--transition), transform var(--transition);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .nav-menu .nav-item a:hover {
+    color: var(--heading);
+    background: rgb(0 0 0 / 4%);
+  }
+
+  .nav-menu .nav-item a:hover::after {
+    opacity: 0.35;
+    transform: scaleX(1);
+  }
+}
+
+/* 当前栏目：实心高亮，一眼可辨 */
 .nav-menu .nav-item.active a {
   background: var(--accent);
   color: #fff;
+  box-shadow: 0 2px 8px -2px var(--accent);
+}
+
+.nav-menu .nav-item.active a::after {
+  opacity: 0;
 }
 
 /* ---------- 右侧操作区 ---------- */
@@ -174,85 +204,6 @@
   color: var(--text-muted);
 }
 
-/* 下拉菜单（原站「其他」） */
-.nav-dropdown {
-  position: relative;
-}
-
-.dropdown-toggle {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  height: 34px;
-  padding: 0 12px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 17px;
-  color: var(--text-muted);
-  font-size: 13px;
-  cursor: pointer;
-  transition: border-color var(--transition), color var(--transition);
-}
-
-.dropdown-toggle:hover,
-.dropdown-toggle[aria-expanded="true"] {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.dropdown-toggle .caret {
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 5px solid currentColor;
-  transition: transform var(--transition);
-}
-
-.dropdown-toggle[aria-expanded="true"] .caret {
-  transform: rotate(180deg);
-}
-
-.nav-dropdown .dropdown-menu {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 8px);
-  min-width: 150px;
-  margin: 0;
-  padding: 6px;
-  list-style: none;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-hover);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-6px);
-  transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
-}
-
-.nav-dropdown.open .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.nav-dropdown .dropdown-menu a {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 7px 10px;
-  border-radius: 3px;
-  color: var(--text-muted);
-  font-size: 13px;
-}
-
-.nav-dropdown .dropdown-menu a:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
 /* 暗色切换按钮 */
 .theme-toggle {
   display: flex;
@@ -269,10 +220,12 @@
   transition: color var(--transition), border-color var(--transition), transform var(--transition);
 }
 
-.theme-toggle:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-  transform: rotate(-18deg);
+@media (hover: hover) and (pointer: fine) {
+  .theme-toggle:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
 }
 
 .theme-toggle .icon {
@@ -342,24 +295,6 @@
     width: 100%;
     min-width: 0;
   }
-
-  .nav-dropdown {
-    position: static;
-  }
-
-  .nav-dropdown .dropdown-menu {
-    position: static;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    display: none;
-    box-shadow: none;
-    margin-top: 6px;
-  }
-
-  .nav-dropdown.open .dropdown-menu {
-    display: block;
-  }
 }
 
 /* 窄屏收紧字号 */
@@ -370,5 +305,30 @@
 
   .brand-sub {
     display: none;
+  }
+}
+
+/* ---------- 滚动状态 ----------
+   离开页首后导航底色收紧、阴影加深，把内容层和导航层分开，
+   避免长页面滚动时导航与卡片糊在一起。 */
+.site-nav.is-scrolled {
+  background: var(--surface);
+  box-shadow: 0 4px 16px -6px rgb(0 0 0 / 28%);
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+/* ---------- 降低动效偏好 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .site-nav,
+  .nav-menu .nav-item a,
+  .nav-menu .nav-item a::after,
+  .nav-toggle,
+  .nav-search,
+  .theme-toggle {
+    transition: none;
+  }
+
+  .theme-toggle:hover {
+    transform: none;
   }
 }
