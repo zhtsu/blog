@@ -103,6 +103,26 @@ front matter 可用字段：
 - **索引正文用 `.RawContent` 而不是 `.Content`**。后者是渲染后的 HTML，代码块里的引号会先被转成 `&#34;` 再被 JSON 二次转义成 `&amp;#34;`。
 - **dark chroma 配色靠模板作用域**。`assets/css/chroma-dark.css` 里带 `{{` 模板，由 `resources.ExecuteAsTemplate` 套上 `[data-theme="dark"]` 前缀；直接 `replaceRE` 加前缀在这版 Hugo 上不生效。
 
+### 改完样式务必核对产物，别只看构建是否成功
+
+构建成功、页面 HTTP 200，**都不代表 CSS 真的生效**。曾经出过一次事故：写导航样式时路径误写成 `layout.css`，把布局层整个覆盖，`#main` 的 `max-width: 1040px` 和 `margin: 0 auto` 一起消失，页面变成铺满整个视口——但构建照样通过，路由照样 200。
+
+所以改完 CSS 请确认两件事：
+
+1. 每个 `assets/css/*.css` 都在 `head.html` 的 `slice` 列表里（漏一个就是整层样式消失）；
+2. 关键规则真的进了产物：
+
+```powershell
+hugo --gc --minify
+$css = Get-Content (Get-ChildItem public\css -Filter 'site.min.*')[0].FullName -Raw
+[regex]::Matches($css, '[^{}]*\{[^}]*max-width:var\(--max-width\)[^}]*\}') | ForEach-Object { $_.Value }
+```
+
+期望看到 `.header-item,.nav-inner` / `#main` / `#footer` 三条带 `max-width:var(--max-width)` 与 `margin:...auto` 的规则——它们就是"1040px 定宽居中"的全部实现。
+
+> 另外：无头 Chrome 在本机沙箱里跑不起来（`mojo platform_channel` 被拒绝，程序间命名管道被封），所以不要依赖浏览器截图做自动校验。
+
+
 ## 部署
 
 `.github/workflows/hugo.yml` 目前只在 `main` 分支推送时触发。要让本分支发布，需要改 workflow 的 `on.push.branches`，并在仓库 Pages 设置里确认发布分支——这一步没动，留给你决定。
