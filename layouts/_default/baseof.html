@@ -15,9 +15,6 @@
 
 {{ partial "back-to-top.html" . }}
 
-{{- /* 看板娘：只输出配置节点，加载器在下面的 main.js 里 */}}
-{{ partial "live2d.html" . }}
-
 <script>
   window.__BLOG__ = {
     searchIndex: {{ "search.json" | relURL }},
@@ -31,7 +28,6 @@
 {{- $main := slice
       (resources.Get "js/theme.js")
       (resources.Get "js/nav.js")
-      (resources.Get "js/live2d-loader.js")
     | resources.Concat "js/main.js" | minify | fingerprint }}
 <script defer src="{{ $main.RelPermalink }}" integrity="{{ $main.Data.Integrity }}"></script>
 {{- if .IsPage }}

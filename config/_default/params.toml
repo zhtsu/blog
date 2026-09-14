@@ -78,18 +78,6 @@ showCover = true
   avatar = ""
   bio = ""
 
-# ---- 看板娘（Live2D）----
-[live2d]
-  enabled = true
-  # 小于该宽度不加载看板娘
-  minWidth = 768
-  # 是否使用本地 vendor 的资源（static/live2d/），false 则走 CDN
-  local = true
-  # CDN 兜底地址
-  cdnPath = "https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/"
-  # 模型 API
-  modelApi = "https://cdn.jsdelivr.net/gh/fghrss/live2d_api/"
-
 # ---- 暗色模式 ----
 [darkMode]
   enabled = true

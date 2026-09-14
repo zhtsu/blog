@@ -44,16 +44,18 @@
 | 标签分类 | JS 里硬编码、页面是空壳 | Hugo taxonomy 真实页面 + 词条总览网格 |
 | 文章详情页 | 无 | 完整正文排版、目录滚动高亮、上下篇、代码块横向滚动、宽表格自适应 |
 | 搜索 | 死表单，无后端 | 构建期生成 `/search.json`，前端按权重全文检索 |
-| 看板娘 | CDN 加载 | 资源本地 vendor 到 `static/live2d/`，离线可用，可一键关闭，尊重 reduced-motion |
 | 图标 | font-awesome + glyphicons | 内联 SVG sprite，零字体依赖，可随主题换色 |
 | 动效偏好 | 忽略 | 交互与位移全部包在 `prefers-reduced-motion` 与 `(hover: hover)` 里 |
+
+> 原站的 Live2D 看板娘**没有移植**（曾做过一版，后来按要求完整移除：
+> `static/live2d/`、`assets/js/live2d-loader.js`、`partials/live2d.html` 及相关参数都已删除）。
 
 ## 目录结构
 
 ```
 config/_default/
   config.toml      站点基础 + taxonomy + 输出格式（SearchIndex）
-  params.toml      所有可调参数：导航、友链、个人卡片、看板娘、暗色模式
+  params.toml      所有可调参数：导航、友链、个人卡片、暗色模式
   markup.toml      goldmark + 代码高亮 + 目录层级
 layouts/
   _default/
@@ -65,13 +67,12 @@ layouts/
     index.searchindex.json 搜索索引模板（名字必须带输出格式名）
   index.html               首页
   post/list.html           文章栏目页
-  partials/                head / header / footer / sidebar / article-card / pagination / toc / live2d …
+  partials/                head / header / footer / sidebar / article-card / pagination / toc / cover …
 assets/
   css/  variables → base → layout → nav → components → content → dark → bootstrap-fix → chroma
         （层叠顺序写死在 partials/head.html 的 slice 列表里，漏一个就是整层样式消失）
-  js/   theme / nav / toc / search / live2d-loader
+  js/   theme / nav / toc / search
 static/
-  live2d/              看板娘整套资源（含上游 LICENSE）
   favicon.png
 content/
   _index.md            首页简介
@@ -172,4 +173,5 @@ $css = Get-Content (Get-ChildItem public\css -Filter 'site.min.*')[0].FullName -
 
 ## 许可
 
-看板娘资源来自 [live2d-widget](https://github.com/stevenjoezhang/live2d-widget)，其许可证随资源放在 `static/live2d/LICENSE`。
+站点代码与内容归仓库作者所有。前端不依赖任何第三方运行时资源
+（Bootstrap 3 的 CSS 从 CDN 引入，用于保留原站栅格观感；其余样式、脚本、图标全部自建）。
