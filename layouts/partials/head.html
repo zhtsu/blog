@@ -52,12 +52,14 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
         integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 
-  {{- /* 站点样式：按层叠顺序拼接（令牌 → 基础 → 布局 → 组件 → 正文 → 暗色 → Bootstrap 兼容 → 代码高亮），
+  {{- /* 站点样式：按层叠顺序拼接
+         （令牌 → 基础 → 布局 → 导航 → 组件 → 正文 → 暗色 → Bootstrap 兼容 → 代码高亮），
          打包压缩加指纹，一次请求搞定。 */}}
   {{- $css := slice
         (resources.Get "css/variables.css")
         (resources.Get "css/base.css")
         (resources.Get "css/layout.css")
+        (resources.Get "css/nav.css")
         (resources.Get "css/components.css")
         (resources.Get "css/content.css")
         (resources.Get "css/dark.css")
