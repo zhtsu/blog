@@ -399,7 +399,9 @@
   color: var(--accent) !important;
 }
 
-/* 链接文字过长时省略，避免撑破 220px 侧栏 */
+/* 链接文字过长时省略，避免撑破 220px 侧栏。
+   用显式的 .card-link-text 而不是 :first-child——
+   分类项前面还有个色点，:first-child 会选错元素。 */
 .card-link {
   display: flex !important;
   align-items: center;
@@ -408,7 +410,8 @@
   overflow: hidden;
 }
 
-.card-link > :first-child {
+.card-link-text {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

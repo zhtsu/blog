@@ -112,26 +112,60 @@ hr {
   border: 0;
 }
 
-/* 键盘焦点可见。
-   单圈强调色 outline 就够了；不加 border-radius，
-   否则会覆盖元素自身的圆角形状（胶囊按钮会被改成直角）。 */
+/* ============================================================
+   焦点与点击反馈
+   目标：鼠标点击 / 触屏点击完全没有任何方框，
+        键盘导航仍有清晰可见的焦点指示。
+
+   做法是「先彻底压掉，再自己画」：
+   1. 原生 tap highlight 关掉；
+   2. UA 可能在 :focus / :active 上画的默认轮廓一律清掉——
+      这是之前点击出现白框的来源（Chrome 在某些情况下会把
+      :focus-visible 也算在鼠标点击上，UA 默认环就会闪一下）；
+   3. 只在 :focus-visible 时由我们自己画强调色环。
+   ============================================================ */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 关键：覆盖 UA 默认轮廓。保留 :focus-visible 分支，键盘可达性不受影响。 */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* 键盘导航时才出现。用 outline 为主；
+   再给没有自带阴影的元素补一圈柔和光晕做加强——
+   注意不能无差别加 box-shadow，否则会覆盖导航项/分页/卡片自身的阴影。 */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* 关掉移动端点击时浏览器自带的半透明高亮方块，
-   那是 UA 默认行为，不是我们想要的状态反馈。 */
-html {
-  -webkit-tap-highlight-color: transparent;
+a:focus-visible,
+button:focus-visible {
+  box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
-/* 自定义控件与链接不参与文本选择，避免长按/拖拽时出现蓝色选区 */
+/* 表单控件改用边框高亮而不是外圈方框，观感更内敛 */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* 交互元素与卡片不参与文本选择，
+   避免长按 / 拖拽时出现蓝色选区，那也是一种「框」。
+   注意不给 .card / .post-card 加：里面是正文，要能正常选中复制。 */
+a,
+button,
 .nav-toggle,
 .theme-toggle,
 .float-btn,
 .pager-item .page-nav-item,
-.search-submit {
+.search-submit,
+.tag-chip,
+.chip {
   user-select: none;
   -webkit-user-select: none;
 }

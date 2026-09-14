@@ -36,33 +36,23 @@ showCover = true
   list = "2006-01-02"
 
 # ---- 导航菜单 ----
+# 只留三项。文章列表与标签已经在首页卡片和右侧栏都能进，
+# 顶栏再放一遍属于重复入口（原本还挤掉了搜索框的宽度）。
 [[main]]
   name = "主页"
   url = "/"
   weight = 10
 
 [[main]]
-  name = "文章"
-  url = "/post/"
-  section = "post"
-  weight = 20
-
-[[main]]
-  name = "标签"
-  url = "/tags/"
-  section = "tags"
-  weight = 30
-
-[[main]]
   name = "归档"
   url = "/archives/"
   section = "archives"
-  weight = 40
+  weight = 20
 
 [[main]]
   name = "关于"
   url = "/about/"
-  weight = 50
+  weight = 30
 
 # ---- 顶栏右侧下拉 ----
 # 已移除：原来照抄了原站 Bootstrap 的「其他」下拉，交互只是默认态。
@@ -72,6 +62,23 @@ showCover = true
 [[links]]
   name = "GOOBLOG"
   url = "https://www.blog.googookuki.cn/#/home"
+
+# ---- 侧栏：其它外链（原本是顶栏「其他」下拉，下拉去掉后移到这里）----
+[[socials]]
+  name = "GitHub"
+  url = "https://github.com/zhtsu"
+
+[[socials]]
+  name = "Gitee"
+  url = "https://gitee.com/zhtsu"
+
+[[socials]]
+  name = "CSDN"
+  url = "https://blog.csdn.net/weixin_45711556"
+
+[[socials]]
+  name = "Bilibili"
+  url = "https://space.bilibili.com/456214277"
 
 # ---- 暗色模式 ----
 [darkMode]
