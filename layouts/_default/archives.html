@@ -30,7 +30,14 @@
           <span class="archive-date">{{ .Date.Format "01-02" }}</span>
           <a class="archive-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
           {{- if $isRec }}
-          <svg class="archive-star" role="img" aria-label="推荐文章" title="推荐文章"><use href="#i-star-fill"></use></svg>
+          {{- /* 直接内联路径，并同时给出 fill 属性与 CSS 兜底：
+               <use> 引用 sprite 会走 shadow tree，填充依赖 currentColor 继承，
+               而这一行的 color 是默认文字色，没有金色兜底，星形可能落成无色。
+               这里 fill 属性写在元素上，CSS 再覆盖一层，两条路都保证有金色。 */ -}}
+          <svg class="archive-star" viewBox="0 0 24 24" role="img" aria-label="推荐文章" fill="#f0ad14">
+            <title>推荐文章</title>
+            <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/>
+          </svg>
           {{- end }}
         </li>
         {{- end }}

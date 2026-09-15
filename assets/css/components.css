@@ -771,7 +771,8 @@
 }
 
 /* 推荐标记：与文章卡片的星标同一套配色，只保留五角星。
-   归档是单行紧凑列表，加上「推荐文章」四个字会把每行撑长、时间线变散。 */
+   归档是单行紧凑列表，加上「推荐文章」四个字会把每行撑长、时间线变散。
+   路径内联、元素上也有 fill 属性，这里的 CSS 只是再兜一层。 */
 .archive-star {
   flex: 0 0 auto;
   align-self: center;
@@ -779,10 +780,19 @@
   height: 11px;
   margin-left: 6px;
   fill: var(--star);
+  stroke: none;
 }
 
-/* 深色下与卡片星标一起提亮，否则同一个金色在深底上会显得发暗 */
-[data-theme="dark"] .archive-star {
+/* 路径显式填充，避免任何继承链断掉时变成无色 */
+.archive-star path {
+  fill: var(--star);
+  stroke: none;
+}
+
+/* 深色下与卡片星标一起提亮。必须同时覆盖 svg 与 path：
+   上面 .archive-star path 的特异性更高，只改 svg 的话深色下会退回暗金。 */
+[data-theme="dark"] .archive-star,
+[data-theme="dark"] .archive-star path {
   fill: #f5c542;
 }
 
