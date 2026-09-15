@@ -475,19 +475,24 @@
 /* 个人卡片样式已随「关于我」卡片一起移除 */
 
 /* ---------- 词条页头图卡（分类 / 标签）----------
-   结构：左文字（分类名 + 描述 + 篇数） / 右圆角矩形缩略图。
+   结构：左圆角矩形缩略图 / 右文字（分类名 + 描述 + 篇数）。
 
-   形状选择：用圆角矩形而不是圆形。
-   圆形在博客语境里天然被读成「作者头像」，放在分类头上语义是错的；
-   矩形缩略图才是「这是这个分类的配图」的通用表达。
-   图给到 144x176（比最早的 92px 圆大得多），整卡高度约 208px。 */
+   位置：图放左侧。博文页面是「先读后看」，左图右文符合从左到右的
+   阅读顺序，也和站内文章卡片的排布一致；
+   放右侧会让人先撞到图再回头读字。
+
+   形状：圆角矩形而非圆形。圆形在博客语境里会被读成作者头像。
+
+   高度：固定 240px。各分类文字长度会变（标题长短、有无描述），
+   固定高度 + 溢出截断保证切换分类时头部不跳动。 */
 .term-banner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: stretch;
-  gap: 20px;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 22px;
+  height: 240px;
   margin-bottom: var(--card-gap);
-  padding: 18px 18px 18px 24px;
+  padding: 16px 26px 16px 16px;
   border-radius: var(--card-radius);
   background: var(--card-color);
   box-shadow: var(--card-shadow);
@@ -495,7 +500,7 @@
   position: relative;
 }
 
-/* 左侧一条分类色，作为整卡的识别锚点（同时替代原先那种大面积色块） */
+/* 左侧一条分类色，作为整卡的识别锚点 */
 .term-banner::before {
   content: "";
   position: absolute;
@@ -506,38 +511,62 @@
   background: var(--term-accent);
 }
 
+.term-banner-media {
+  width: 208px;
+  height: 208px;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  background: var(--code-bg);
+  box-shadow: var(--shadow);
+}
+
+.term-banner-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
 .term-banner-text {
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-width: 0;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .term-banner-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 0 0 6px;
+  gap: 9px;
+  margin: 0 0 8px;
   color: var(--heading);
-  font-size: 25px;
+  /* 长分类名自动缩字号，避免换行把卡片撑高 */
+  font-size: clamp(20px, 3.2vw, 30px);
   font-weight: 700;
   letter-spacing: 0.5px;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .term-banner-title .icon {
-  width: 1em;
-  height: 1em;
+  width: 0.9em;
+  height: 0.9em;
   color: var(--term-accent);
   opacity: 0.9;
 }
 
 .term-banner-desc {
-  margin: 0 0 6px;
-  max-width: 56ch;
+  margin: 0 0 8px;
+  max-width: 58ch;
   color: var(--text-muted);
   font-size: 13.5px;
   line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .term-banner-count {
@@ -547,45 +576,26 @@
   font-variant-numeric: tabular-nums;
 }
 
-.term-banner-media {
-  flex: 0 0 auto;
-  min-height: 176px;
-  border-radius: calc(var(--card-radius) + 1px);
-  overflow: hidden;
-  background: var(--code-bg);
-  box-shadow: var(--shadow);
-}
-
-.term-banner-media img {
-  display: block;
-  width: 144px;
-  height: 100%;
-  min-height: 176px;
-  object-fit: cover;
-  object-position: center top;
-}
-
 @media (max-width: 768px) {
   .term-banner {
     gap: 14px;
-    padding: 14px 14px 14px 18px;
+    height: 148px;
+    padding: 12px 16px 12px 12px;
+  }
+
+  .term-banner-media {
+    width: 124px;
+    height: 124px;
   }
 
   .term-banner-title {
-    font-size: 20px;
+    font-size: 19px;
+    margin-bottom: 5px;
   }
 
   .term-banner-desc {
     font-size: 12.5px;
-  }
-
-  .term-banner-media {
-    min-height: 118px;
-  }
-
-  .term-banner-media img {
-    width: 96px;
-    min-height: 118px;
+    -webkit-line-clamp: 2;
   }
 }
 

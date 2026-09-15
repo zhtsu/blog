@@ -1,16 +1,16 @@
-{{- /* 词条页头图（分类 / 标签）。
+{{- /* 词条页头图卡（分类 / 标签）。
        数据来自 content/categories/<name>/_index.md 的 image:，
        是该目录下的页面资源。
 
        设计取舍记录：
-       1. 最初做成 1040x280 的宽横幅 —— 失败。站内分类图是方图或竖构图
-          （500x500 / 753x1024），横幅比例 3.71:1，cover 要裁掉约 80% 高度，
-          只剩一条横切条，图的构图被毁。
-       2. 改成「模糊底图 + 圆形原图」—— 圆形在博客语境里会被读成作者头像，
-          放在分类头上语义不对。
-       3. 当前：圆角矩形缩略图卡。左色块承载分类名首字与图标，
-          右侧图给到 144x176（比圆形版大很多），整体高度 208px。
-          图用圆角矩形而非圆形——「矩形缩略图」不会被误读成头像。 */ -}}
+       1. 1040x280 宽横幅 —— 失败。分类图是方图/竖构图（500x500、753x1024），
+          横幅比例 3.71:1，cover 要裁掉约 80% 高度，只剩一条横切条。
+       2. 模糊底图 + 圆形 —— 圆形在博客语境里会被读成作者头像，语义不对。
+       3. 圆角矩形缩略图放右侧 —— 形状对了，但位置别扭：
+          博文页面是「先读后看」，左图右文才符合从左到右的阅读顺序；
+          右图会让人先撞到图再回头读字，也和站内文章卡片的左图右文不一致。
+       4. 当前：左图右文。图 208x208 方图（不裁到只剩一条），
+          卡片固定高度，长标题也不会把卡片撑高。 */ -}}
 {{- $page := . -}}
 {{- $name := $page.Params.image -}}
 {{- $desc := partial "page-body.html" $page -}}
@@ -26,6 +26,9 @@
   {{- end -}}
   {{- with $src -}}
   <header class="term-banner" style="--term-accent:{{ $accent }}">
+    <div class="term-banner-media">
+      <img src="{{ . }}" alt="" loading="eager" decoding="async">
+    </div>
     <div class="term-banner-text">
       <h1 class="term-banner-title">
         {{- if eq $page.Data.Plural "tags" -}}
@@ -37,9 +40,6 @@
       </h1>
       {{- with $desc }}<p class="term-banner-desc">{{ . | plainify }}</p>{{ end }}
       <p class="term-banner-count">共 {{ len $page.Pages }} 篇</p>
-    </div>
-    <div class="term-banner-media">
-      <img src="{{ . }}" alt="" loading="eager" decoding="async">
     </div>
   </header>
   {{- end -}}
