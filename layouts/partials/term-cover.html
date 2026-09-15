@@ -2,19 +2,19 @@
        数据来自 content/categories/<name>/_index.md 的 image:，
        是该目录下的页面资源。
 
-       为什么不做成宽横幅：
-       站内的分类图是方形或竖构图（500x500 / 753x1024），
-       而横幅容器是 1040x280，比例 3.71:1。cover 为了填满它
-       要裁掉约 80% 的高度，不管从顶部还是居中取景，都只剩一条横切条，
-       图本身的构图就毁了。
-       所以改成：
-       · 同一张图放大模糊后铺满整块，提供氛围与分类色
-       · 原图以圆形完整呈现，不裁剪，保住构图
-       · 上压一层遮罩保证文字可读
-       这样任意长宽比的图都能用，也不必为每个分类另配横幅图。 */ -}}
+       设计取舍记录：
+       1. 最初做成 1040x280 的宽横幅 —— 失败。站内分类图是方图或竖构图
+          （500x500 / 753x1024），横幅比例 3.71:1，cover 要裁掉约 80% 高度，
+          只剩一条横切条，图的构图被毁。
+       2. 改成「模糊底图 + 圆形原图」—— 圆形在博客语境里会被读成作者头像，
+          放在分类头上语义不对。
+       3. 当前：圆角矩形缩略图卡。左色块承载分类名首字与图标，
+          右侧图给到 144x176（比圆形版大很多），整体高度 208px。
+          图用圆角矩形而非圆形——「矩形缩略图」不会被误读成头像。 */ -}}
 {{- $page := . -}}
 {{- $name := $page.Params.image -}}
 {{- $desc := partial "page-body.html" $page -}}
+{{- $accent := $page.Params.style.background | default "#4a76a8" -}}
 {{- if $name -}}
   {{- $src := "" -}}
   {{- if or (hasPrefix $name "http://") (hasPrefix $name "https://") -}}
@@ -25,23 +25,21 @@
     {{- end -}}
   {{- end -}}
   {{- with $src -}}
-  <header class="term-banner" style="--term-img:url('{{ . }}')">
-    <span class="term-banner-bg" aria-hidden="true"></span>
-    <span class="term-banner-scrim" aria-hidden="true"></span>
-    <div class="term-banner-body">
-      <img class="term-banner-avatar" src="{{ . }}" alt="" loading="eager" decoding="async">
-      <div class="term-banner-text">
-        <h1 class="term-banner-title">
-          {{- if eq $page.Data.Plural "tags" -}}
-          <svg class="icon" aria-hidden="true"><use href="#i-tag"></use></svg>
-          {{- else -}}
-          <svg class="icon" aria-hidden="true"><use href="#i-folder"></use></svg>
-          {{- end -}}
-          {{ $page.Title }}
-        </h1>
-        {{- with $desc }}<p class="term-banner-desc">{{ . | plainify }}</p>{{ end }}
-        <p class="term-banner-count">共 {{ len $page.Pages }} 篇</p>
-      </div>
+  <header class="term-banner" style="--term-accent:{{ $accent }}">
+    <div class="term-banner-text">
+      <h1 class="term-banner-title">
+        {{- if eq $page.Data.Plural "tags" -}}
+        <svg class="icon" aria-hidden="true"><use href="#i-tag"></use></svg>
+        {{- else -}}
+        <svg class="icon" aria-hidden="true"><use href="#i-folder"></use></svg>
+        {{- end -}}
+        {{ $page.Title }}
+      </h1>
+      {{- with $desc }}<p class="term-banner-desc">{{ . | plainify }}</p>{{ end }}
+      <p class="term-banner-count">共 {{ len $page.Pages }} 篇</p>
+    </div>
+    <div class="term-banner-media">
+      <img src="{{ . }}" alt="" loading="eager" decoding="async">
     </div>
   </header>
   {{- end -}}
