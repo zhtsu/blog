@@ -78,29 +78,34 @@ showCover = true
 # repoID / categoryID 为空时模板不输出评论区，页面上不会出现空白框。
 # 单篇文章可在 front matter 用 comments: false 单独关闭。
 [comments]
-  enabled = false
+  enabled = true
   provider = "giscus"
 
   [comments.giscus]
     # 仓库名，形如 用户名/仓库名
     repo = "zhtsu/blog"
-    # 从 giscus.app 生成，形如 R_kgDOxxxxxx
-    repoID = ""
-    # Discussion 分类名，建议选只有维护者能发起讨论的分类
+    # 从 giscus.app 生成
+    repoID = "R_kgDOLkdXbQ"
+    # Discussion 分类名
     category = "Announcements"
-    # 从 giscus.app 生成，形如 DIC_kwDOxxxxxx
-    categoryID = ""
+    # 从 giscus.app 生成
+    categoryID = "DIC_kwDOLkdXbc4DFrbl"
     # 页面与 discussion 的映射方式：pathname | url | title | og:title
+    # pathname 只取路径、不含域名，站点换域名时评论不会丢
     mapping = "pathname"
-    # "1" = 严格匹配映射值
-    strict = "1"
+    # "1" = 严格匹配映射值；"0" = 宽松，映射值有偏差时仍能命中已有讨论
+    strict = "0"
     # 是否显示表情回应
     reactionsEnabled = "1"
     # 输入框位置：top | bottom
-    inputPosition = "top"
+    inputPosition = "bottom"
     # 界面语言
     lang = "zh-CN"
-    # 浅色 / 深色主题，深色由 assets/js/comments.js 动态切换
+    # 初始主题。刻意不用 giscus 的 preferred_color_scheme：
+    # 那个值只读系统偏好，而本站有手动切换按钮，
+    # 一旦用户手动切过，系统偏好就与实际主题不一致。
+    # 这里给确定值，再由 assets/js/comments.js 按 <html data-theme> 校正；
+    # 脚本在加载期会先隐藏 iframe，避免出现主题闪变。
     lightTheme = "light"
     darkTheme = "dark"
 
