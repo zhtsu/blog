@@ -253,6 +253,35 @@
   transition-duration: 90ms;
 }
 
+/* ---------- 推荐文章标记 ----------
+   在卡片右下角的标签行里显示「★ 推荐文章」，五角星为金黄色。
+   这是文章列表里唯一标记推荐的地方。 */
+.tag-chip-rec {
+  background: rgb(240 173 20 / 14%);
+  color: #a8760a;
+  font-weight: 600;
+}
+
+.tag-chip-rec .icon-star {
+  width: 11px;
+  height: 11px;
+  fill: #f0ad14;
+}
+
+.tag-chip-rec:hover {
+  background: rgb(240 173 20 / 26%);
+  color: #8c6308;
+}
+
+[data-theme="dark"] .tag-chip-rec {
+  background: rgb(240 173 20 / 16%);
+  color: #e8b64a;
+}
+
+[data-theme="dark"] .tag-chip-rec .icon-star {
+  fill: #f5c542;
+}
+
 /* ---------- 文章卡片：窄屏改为上下堆叠 ---------- */
 @media (max-width: 768px) {
   .post-card {
