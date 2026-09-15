@@ -333,6 +333,48 @@
   margin-bottom: 0;
 }
 
+/* ---------- 评论区 ----------
+   giscus 渲染在自己的 iframe 里，样式无法从外部穿透，
+   所以这里能做的是把「外框」融进站点的卡片体系：
+   同底色、同圆角、同阴影，标题用与正文一致的层级。
+   因而不大会出现一个突兀的白色方块贴在文章末尾。 */
+.comments {
+  margin-top: var(--gap);
+  padding: 20px 22px 22px;
+}
+
+.comments-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--heading);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.comments-title .icon {
+  color: var(--accent);
+}
+
+.comments-body {
+  min-height: 120px;
+}
+
+.comments-noscript {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .comments {
+    padding: 16px 16px 18px;
+  }
+}
+
 /* ---------- 搜索页 ---------- */
 .search-form {
   display: flex;

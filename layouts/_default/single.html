@@ -88,6 +88,12 @@
       </footer>
     </article>
 
+    {{- /* 评论区。未配置 [comments] 时 partial 自身不输出任何内容。
+           文章可在 front matter 用 comments: false 单独关闭。 */ -}}
+    {{- if ne .Params.comments false }}
+    {{ partial "comments.html" . }}
+    {{- end }}
+
     <p class="back-home">
       <a href="{{ "/" | relURL }}">
         <svg class="icon icon-xs" aria-hidden="true"><use href="#i-chevron-left"></use></svg> 返回首页

@@ -34,6 +34,14 @@
 {{- $toc := resources.Get "js/toc.js" | minify | fingerprint }}
 <script defer src="{{ $toc.RelPermalink }}" integrity="{{ $toc.Data.Integrity }}"></script>
 {{- end }}
+{{- /* 评论区主题联动：仅在评论真正启用且 provider 为 giscus 时才加载。
+       条件与 partials/comments.html 的守卫一致——
+       ID 没填时那个 partial 不输出任何内容，这里也不该多加载一个脚本。 */}}
+{{- $c := site.Params.comments }}
+{{- if and .IsPage $c.enabled (eq $c.provider "giscus") $c.giscus.repoID $c.giscus.categoryID }}
+{{- $cm := resources.Get "js/comments.js" | minify | fingerprint }}
+<script defer src="{{ $cm.RelPermalink }}" integrity="{{ $cm.Data.Integrity }}"></script>
+{{- end }}
 {{- block "scripts" . }}{{ end }}
 </body>
 </html>

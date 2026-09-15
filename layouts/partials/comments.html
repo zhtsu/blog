@@ -1,0 +1,54 @@
+{{- /* 评论区。
+       Hugo 是静态生成器，本身没有评论能力，这里做的是「在文章页嵌入
+       第三方评论组件」。当前只实现 giscus（基于 GitHub Discussions），
+       按 provider 分支保留扩展位。
+
+       为什么默认推荐 giscus：
+       评论数据存在自己的 GitHub 仓库里，不需要数据库和服务器，
+       零维护成本；明暗主题可通过 postMessage 与站点联动。
+
+       配置见 config/_default/params.toml 的 [comments]。
+       未配置 repoID / categoryID 时整块不输出，
+       避免在页面上留一个加载失败的空白框。 */ -}}
+{{- $c := site.Params.comments -}}
+{{- if $c.enabled -}}
+
+  {{- if eq $c.provider "giscus" -}}
+    {{- $g := $c.giscus -}}
+    {{- if and $g.repoID $g.categoryID -}}
+<section class="comments card" id="comments" aria-label="评论">
+  <h2 class="comments-title">
+    <svg class="icon icon-xs" aria-hidden="true"><use href="#i-comment"></use></svg>
+    评论
+  </h2>
+  <div class="comments-body">
+    {{- /* 主题名传给脚本，用于站点明暗切换时联动 giscus */ -}}
+    <div id="comments-theme" hidden
+         data-light="{{ $g.lightTheme | default "light" }}"
+         data-dark="{{ $g.darkTheme | default "dark" }}"></div>
+    <script src="https://giscus.app/client.js"
+            data-repo="{{ $g.repo }}"
+            data-repo-id="{{ $g.repoID }}"
+            data-category="{{ $g.category }}"
+            data-category-id="{{ $g.categoryID }}"
+            data-mapping="{{ $g.mapping | default "pathname" }}"
+            data-strict="{{ $g.strict | default "1" }}"
+            data-reactions-enabled="{{ $g.reactionsEnabled | default "1" }}"
+            data-emit-metadata="{{ $g.emitMetadata | default "0" }}"
+            data-input-position="{{ $g.inputPosition | default "top" }}"
+            data-theme="{{ $g.lightTheme | default "light" }}"
+            data-lang="{{ $g.lang | default "zh-CN" }}"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async></script>
+  </div>
+  <noscript>
+    <p class="comments-noscript">评论区需要 JavaScript。你也可以直接到
+      <a href="https://github.com/{{ $g.repo }}/discussions" target="_blank" rel="noopener noreferrer">GitHub Discussions</a>
+      参与讨论。</p>
+  </noscript>
+</section>
+    {{- end -}}
+  {{- end -}}
+
+{{- end -}}

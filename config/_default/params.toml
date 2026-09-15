@@ -64,6 +64,46 @@ showCover = true
 [recommend]
   tag = "推荐文章"
 
+# ---- 评论 ----
+# Hugo 本身没有评论能力，这里是在文章页嵌入第三方组件。
+# 只实现 giscus（基于 GitHub Discussions）：评论存在自己的仓库里，
+# 不需要数据库与服务器，零维护成本。
+#
+# 启用步骤：
+#   1. 仓库 Settings → Features 勾选 Discussions
+#   2. 安装 https://github.com/apps/giscus ，只授权本仓库
+#   3. 到 https://giscus.app/zh-CN 填仓库名，复制生成的
+#      data-repo-id / data-category-id 填到下面，再把 enabled 改为 true
+#
+# repoID / categoryID 为空时模板不输出评论区，页面上不会出现空白框。
+# 单篇文章可在 front matter 用 comments: false 单独关闭。
+[comments]
+  enabled = false
+  provider = "giscus"
+
+  [comments.giscus]
+    # 仓库名，形如 用户名/仓库名
+    repo = "zhtsu/blog"
+    # 从 giscus.app 生成，形如 R_kgDOxxxxxx
+    repoID = ""
+    # Discussion 分类名，建议选只有维护者能发起讨论的分类
+    category = "Announcements"
+    # 从 giscus.app 生成，形如 DIC_kwDOxxxxxx
+    categoryID = ""
+    # 页面与 discussion 的映射方式：pathname | url | title | og:title
+    mapping = "pathname"
+    # "1" = 严格匹配映射值
+    strict = "1"
+    # 是否显示表情回应
+    reactionsEnabled = "1"
+    # 输入框位置：top | bottom
+    inputPosition = "top"
+    # 界面语言
+    lang = "zh-CN"
+    # 浅色 / 深色主题，深色由 assets/js/comments.js 动态切换
+    lightTheme = "light"
+    darkTheme = "dark"
+
 # ---- 暗色模式 ----
 [darkMode]
   enabled = true
