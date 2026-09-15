@@ -58,11 +58,12 @@
     </ul>
   </div>
 
-  {{- /* 3. 推荐文章：用标签驱动。
-         在 params.toml 的 [recommend] tag 里指定标签名（默认「推荐文章」），
-         给文章 front matter 的 tags 加上这个标签，它就会出现在这里。
+  {{- /* 3. 推荐：用标签驱动。
+         标签名在 params.toml 的 [recommend] tag 里指定，
+         给文章 front matter 的 tags 加上它，文章就会出现在这里。
+         卡片标题、标记文案都跟随该标签名，改名只需改配置一处。
          一篇都没打该标签时，回落显示最新文章，卡片不会空着。 */ -}}
-  {{- $recTag := site.Params.recommend.tag | default "推荐文章" -}}
+  {{- $recTag := partial "rec-tag-name.html" . -}}
   {{- $recommended := where site.RegularPages "Params.tags" "intersect" (slice $recTag) -}}
   {{- $recommended = $recommended.ByDate.Reverse -}}
   {{- $isRec := gt (len $recommended) 0 -}}
@@ -74,12 +75,13 @@
   <div class="card">
     <ul class="nav nav-pills nav-stacked card-list">
       <li role="presentation" class="disabled">
-        {{- /* 标题不指向 /tags/推荐文章/：这个标签是内部驱动用的，
-               不应作为一个可发现的标签页入口出现在全站每一页。
-               卡片的实际价值是下面那几条文章链接。 */ -}}
+        {{- /* 标题不指向 /tags/<标签>/：这是内部驱动用的标签，
+               不应作为可发现的标签页入口出现在全站每一页。
+               卡片的实际价值是下面那几条文章链接。
+               标题文案跟随配置里的标签名，改名无需动模板。 */ -}}
         <a class="card-title" href="{{ "post/" | relURL }}">
           {{- if $isRec }}
-          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-star"></use></svg> 推荐文章
+          <svg class="icon icon-xs" aria-hidden="true"><use href="#i-star"></use></svg> {{ $recTag }}
           {{- else }}
           <svg class="icon icon-xs" aria-hidden="true"><use href="#i-clock"></use></svg> 最新文章
           {{- end }}

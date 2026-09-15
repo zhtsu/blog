@@ -30,14 +30,16 @@
           {{- end }}
         </div>
         {{- /* 推荐标记与普通标签同处一行，放在最前面，
-               与文章卡片上的样式、顺序一致 */ -}}
+               与文章卡片上的样式、顺序一致。
+               文案取自配置里的标签名，改名无需动模板。 */ -}}
         {{- $tags := partial "tags-public.html" . -}}
-        {{- $isRec := in .Params.tags (partial "rec-tag-name.html" .) -}}
+        {{- $recTag := partial "rec-tag-name.html" . -}}
+        {{- $isRec := in .Params.tags $recTag -}}
         {{- if or $tags $isRec }}
         <div class="post-tags">
           {{- if $isRec }}
-          <span class="tag-chip tag-chip-rec" title="推荐文章">
-            <svg class="icon icon-star" aria-hidden="true"><use href="#i-star-fill"></use></svg>推荐文章
+          <span class="tag-chip tag-chip-rec" title="{{ $recTag }}">
+            <svg class="icon icon-star" aria-hidden="true"><use href="#i-star-fill"></use></svg>{{ $recTag }}
           </span>
           {{- end }}
           {{- range $tags }}
