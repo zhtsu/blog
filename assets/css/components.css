@@ -771,68 +771,28 @@
 }
 
 /* ---------- 归档里的推荐行 ----------
-   设计说明：孤零零一枚小星挂在标题后，没有任何载体，读起来像补上去的。
-   改成「整行有边界」的处理——
-   · 左侧一条金色强调条：时间线上形成一列金色，扫视即可定位
-   · 行尾一枚「推荐」小胶囊：星形有容器承载，不再是散落的符号
-   · 标题加粗并提亮到标题色
-   这样推荐项靠「整行的形态」被识别，而不是靠一个 11px 的图标。
-
-   用 margin-left: -10px 抵消 padding-left，让整行仍然顶到卡片左侧：
-   强调条落在卡片左内边距里，不会和日期挤在一起。 */
-.archive-item.is-rec {
-  position: relative;
-  padding-left: 10px;
-  margin-left: -10px;
-  border-bottom-color: rgb(240 173 20 / 38%);
-}
-
-.archive-item.is-rec::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 2px;
-  bottom: 2px;
-  width: 2px;
-  border-radius: 1px;
-  background: var(--star);
-}
-
+   只保留行尾的「★ 推荐文章」胶囊，与文章卡片、详情页完全同一套写法。
+   刻意不加左侧强调条、不改分隔线颜色：
+   归档本身已经是一列安静的时间线，一枚胶囊足够定位，多了反而吵。 */
 .archive-item.is-rec .archive-link {
   font-weight: 600;
   color: var(--heading);
 }
 
-.archive-rec {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
+/* 归档行是紧凑单行，胶囊顶到行尾，让两枚在时间线上对齐成一列。
+   标题给 flex:1 1 auto + min-width:0：窄屏下长标题正常换行，
+   不会把胶囊挤出卡片右侧。 */
+.archive-item .archive-link {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.archive-item .tag-chip-rec {
   flex: 0 0 auto;
   align-self: center;
-  margin-left: 8px;
-  padding: 1px 7px 1px 5px;
-  border-radius: 10px;
-  background: var(--star-bg);
-  color: var(--star-text);
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.6;
-}
-
-.archive-rec svg {
-  width: 10px;
-  height: 10px;
-  fill: var(--star);
-}
-
-[data-theme="dark"] .archive-rec {
-  background: rgb(240 173 20 / 16%);
-  color: #e8b64a;
-}
-
-[data-theme="dark"] .archive-rec svg,
-[data-theme="dark"] .archive-rec svg path {
-  fill: #f5c542;
+  margin-left: auto;
+  padding-left: 6px;
+  border-radius: 3px;
 }
 
 .archive-item.is-rec .archive-link {

@@ -33,10 +33,13 @@
           <span class="archive-date">{{ .Date.Format "01-02" }}</span>
           <a class="archive-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
           {{- if $isRec }}
-          <span class="archive-rec">
-            <svg viewBox="0 0 24 24" aria-hidden="true" fill="#f0ad14">
+          {{- /* 与文章卡片、详情页用同一套写法：tag-chip + tag-chip-rec。
+               星形路径内联并显式 fill，避免 <use> 的 shadow tree
+               继承问题导致星形无色。文字用完整四字。 */ -}}
+          <span class="tag-chip tag-chip-rec" title="推荐文章">
+            <svg class="icon icon-star" viewBox="0 0 24 24" aria-hidden="true" fill="#f0ad14">
               <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/>
-            </svg>推荐
+            </svg>推荐文章
           </span>
           {{- end }}
         </li>
