@@ -29,9 +29,18 @@
           </span>
           {{- end }}
         </div>
-        {{- with partial "tags-public.html" . }}
+        {{- /* 推荐标记与普通标签同处一行，放在最前面，
+               与文章卡片上的样式、顺序一致 */ -}}
+        {{- $tags := partial "tags-public.html" . -}}
+        {{- $isRec := in .Params.tags (partial "rec-tag-name.html" .) -}}
+        {{- if or $tags $isRec }}
         <div class="post-tags">
-          {{- range . }}
+          {{- if $isRec }}
+          <span class="tag-chip tag-chip-rec" title="推荐文章">
+            <svg class="icon icon-star" aria-hidden="true"><use href="#i-star-fill"></use></svg>推荐文章
+          </span>
+          {{- end }}
+          {{- range $tags }}
           <a class="tag-chip" href="{{ partial "term-url.html" (dict "page" $ "taxonomy" "tags" "name" .) }}">
             <svg class="icon icon-xs" aria-hidden="true"><use href="#i-tag"></use></svg>{{ . }}
           </a>

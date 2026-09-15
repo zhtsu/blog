@@ -257,23 +257,24 @@
 }
 
 /* ---------- 推荐文章标记 ----------
-   在卡片右下角的标签行里显示「★ 推荐文章」，五角星为金黄色。
-   这是文章列表里唯一标记推荐的地方。 */
+   金色五角星 + 「推荐文章」四个字。
+   卡片、归档、正文页三处共用 variables.css 里的 --star* 变量，
+   保证深浅色下配色完全一致。 */
 .tag-chip-rec {
-  background: rgb(240 173 20 / 14%);
-  color: #a8760a;
+  background: var(--star-bg);
+  color: var(--star-text);
   font-weight: 600;
 }
 
 .tag-chip-rec .icon-star {
   width: 11px;
   height: 11px;
-  fill: #f0ad14;
+  fill: var(--star);
 }
 
 .tag-chip-rec:hover {
-  background: rgb(240 173 20 / 26%);
-  color: #8c6308;
+  background: var(--star-bg-hover);
+  color: var(--star-text);
 }
 
 [data-theme="dark"] .tag-chip-rec {
@@ -769,15 +770,20 @@
   color: var(--accent);
 }
 
-/* 推荐标记：与文章卡片同一套金黄配色，但这里只放五角星。
+/* 推荐标记：与文章卡片的星标同一套配色，只保留五角星。
    归档是单行紧凑列表，加上「推荐文章」四个字会把每行撑长、时间线变散。 */
 .archive-star {
   flex: 0 0 auto;
   align-self: center;
-  width: 13px;
-  height: 13px;
+  width: 11px;
+  height: 11px;
   margin-left: 6px;
-  fill: #f0ad14;
+  fill: var(--star);
+}
+
+/* 深色下与卡片星标一起提亮，否则同一个金色在深底上会显得发暗 */
+[data-theme="dark"] .archive-star {
+  fill: #f5c542;
 }
 
 .archive-item.is-rec .archive-link {

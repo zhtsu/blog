@@ -32,6 +32,14 @@
   --code-bg: #f2f2f2;
   --code-border: #e4e4e4;
 
+  /* 推荐标记（金色五角星）的配色。抽成变量，
+     卡片、归档、正文页三处共用一套，避免各写各的导致深浅色下不一致。
+     浅色：#a8760a 文字 / #f0ad14 星；深色换成更亮的 #e8b64a / #f5c542。 */
+  --star: #f0ad14;
+  --star-text: #a8760a;
+  --star-bg: rgb(240 173 20 / 14%);
+  --star-bg-hover: rgb(240 173 20 / 26%);
+
   --nav-bg: var(--card-color);
   --nav-height: 60px;
 
