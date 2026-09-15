@@ -101,13 +101,20 @@ showCover = true
     inputPosition = "bottom"
     # 界面语言
     lang = "zh-CN"
-    # 初始主题。刻意不用 giscus 的 preferred_color_scheme：
-    # 那个值只读系统偏好，而本站有手动切换按钮，
-    # 一旦用户手动切过，系统偏好就与实际主题不一致。
-    # 这里给确定值，再由 assets/js/comments.js 按 <html data-theme> 校正；
-    # 脚本在加载期会先隐藏 iframe，避免出现主题闪变。
+    # 初始主题，随后由 assets/js/comments.js 按 <html data-theme> 校正。
+    #
+    # 浅色选 light：giscus 底 #ffffff 与本站卡片底 #f8f8f8 对比仅 1.06:1，
+    # 肉眼几乎无接缝，已是原生无缝。
+    #
+    # 深色选 dark_dimmed（#22272e）而不是 dark（#0d1117）：
+    # 后者比本站页面底 #16181c 还暗，会在卡片 #1f2227 里形成
+    # 「挖了一块更黑的洞」的观感。dark_dimmed 与卡片对比 1.06:1 几乎融入，
+    # 同时与页面底形成 1.18:1 的轻微层次——正是本站卡片比页面略亮的视觉语言。
+    #
+    # 备选 transparent_dark：完全透明、接缝为零，但容器边界也随之消失，
+    # 评论区的范围将无从辨认，故未采用。
     lightTheme = "light"
-    darkTheme = "dark"
+    darkTheme = "dark_dimmed"
 
 # ---- 暗色模式 ----
 [darkMode]
