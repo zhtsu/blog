@@ -6,5 +6,17 @@
     <p class="footer-text">
       <small>Copyright &copy; {{ if lt (int $since) $now }}{{ $since }}&ndash;{{ $now }}{{ else }}{{ $now }}{{ end }} <strong>{{ $author }}</strong></small>
     </p>
+    {{- with site.Params.footer.customText }}
+    <p class="footer-text"><small>{{ . }}</small></p>
+    {{- end }}
+
+    {{- if site.Params.footer.showHugo | default true }}
+    <p class="footer-text footer-hugo">
+      <small>
+        Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a>
+        <span class="footer-ver">v{{ hugo.Version }}</span>
+      </small>
+    </p>
+    {{- end }}
   </div>
 </footer>

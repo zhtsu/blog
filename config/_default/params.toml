@@ -29,6 +29,8 @@ showCover = true
 [footer]
   since = 2020
   customText = ""
+  # 显示「Powered by Hugo + 版本号」，置 false 可关掉
+  showHugo = true
 
 # 日期显示格式（Hugo 使用 Go 的时间布局）
 [dateFormat]
