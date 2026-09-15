@@ -1,6 +1,7 @@
 ---
 title: Python 环境配置教程
 date: 2021-04-28
+slug: python-setup-guide
 description: 从零开始配 Python 环境：目录怎么规划、安装界面每一步怎么选、环境变量怎么检查、VSCode 怎么接上。
 image: cover-05.png
 tags: 

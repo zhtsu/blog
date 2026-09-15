@@ -99,12 +99,41 @@ content/
 
 `latest` 的文章、分类、图片全部从 `main` 迁移而来（9 篇文章 / 9 个标签 / 3 个分类），沿用 main 原有的约定，没有改写 front matter：
 
-- **URL 保持不变**：`config/_default/permalinks.toml` 里 `post = "/p/:slug/"`，与 main 一致，线上已收录的链接不会失效
+- **URL 用 ASCII slug**：`config/_default/permalinks.toml` 里 `post = "/p/:slug/"`。
+  每篇文章的 front matter 显式写 `slug`，URL 才是干净的英文路径，
+  见下节「文章 URL 用 ASCII slug」。
 - **封面图**：文章用 `image: cover-07.png` 指同目录的图片资源（page bundle），模板按页面资源解析
 - **分类徽章配色**：`content/categories/<name>/_index.md` 里的 `style.background`，侧栏分类项前的色点直接读它
 - **标签大小写**：taxonomy 词条页 URL 由 Hugo 生成（`C++` → `/tags/c++/`），模板里用 `partials/term-url.html` 反查真实地址，**不要自己拼** `tags/` + `urlize(name)`
 
 `temp/web/` 那版静态站只是设计参考，不入库（已在 `.gitignore` 里）。
+
+## 文章 URL 用 ASCII slug
+
+文章按 `post = "/p/:slug/"` 生成路径。`:slug` 默认取**页面目录名**，
+而目录是中文，URL 里就会变成 percent-encoding：
+
+```
+/p/%E4%BD%BF%E7%94%A8%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E%E6%97%B6%E7%9A%84%E7%BB%86%E8%8A%82%E5%92%8C%E8%A7%84%E8%8C%83/
+```
+
+这不影响访问（浏览器与搜索引擎会自动解码），但复制分享时很难看。
+所以在每篇文章的 front matter 里显式写 `slug`：
+
+```yaml
+---
+title: 使用游戏引擎时的细节和规范
+date: 2024-12-19
+slug: game-engine-notes        # ← 决定 URL，只用小写字母、数字、连字符
+---
+```
+
+得到 `/p/game-engine-notes/`。**标题保持中文，两者互不影响。**
+
+- **新建文章时务必加上 `slug`**，否则 URL 会退回中文编码形式。
+- 目录名可以继续用中文（方便在文件管理器里辨认），也可以直接改成英文，随你。
+- **改了 `slug` 等于改了 URL**，旧的链接会 404。本次迁移是主动接受的代价，
+  未做跳转；若以后需要保留旧链接，可用 front matter 的 `aliases` 生成跳转页。
 
 ## 本地开发
 

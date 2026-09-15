@@ -1,6 +1,7 @@
 ---
 title: DemoSurvivors 开发日志
 date: 2023-10-28
+slug: demosurvivors-devlog
 image: cover-04.png
 description: 使用 Godot 开发的类吸血鬼幸存者游戏
 tags: 

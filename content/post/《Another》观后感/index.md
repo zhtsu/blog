@@ -1,6 +1,7 @@
 ---
 title: 《Another》观后感
 date: 2024-06-01
+slug: another-review
 description: 悬疑小说改的惊悚番，观感并不舒适，但沉重得有价值。
 image: cover-02.png
 tags: 

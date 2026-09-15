@@ -1,6 +1,7 @@
 ---
 title: 像素画合集（一）
 date: 2022-12-08
+slug: pixel-art-01
 image: cover-08.png
 description: 2022 到 2023 年画的像素画合集，有些做成了动图。
 tags: 

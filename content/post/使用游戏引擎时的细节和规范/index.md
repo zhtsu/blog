@@ -1,6 +1,7 @@
 ---
 title: 使用游戏引擎时的细节和规范
 date: 2024-12-19
+slug: game-engine-notes
 description: 用 UE 和 Godot 时踩过的一些坑与约定：3DUI 与 DrawDebug 的冲突、生命周期函数的覆盖关系等。
 image: geass.png
 tags: 

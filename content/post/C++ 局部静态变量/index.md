@@ -1,6 +1,7 @@
 ---
 title: C++ 局部静态变量
 date: 2022-07-09
+slug: cpp-local-static-variable
 description: 连续调用 PrintCount 三次会输出什么？从局部静态变量的初始化时机说起。
 image: cover-07.png
 tags: 

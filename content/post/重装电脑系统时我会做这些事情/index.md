@@ -1,6 +1,7 @@
 ---
 title: 重装电脑系统时我会做这些事情
 date: 2024-06-08
+slug: reinstall-windows-setup
 description: 用户名不含中文、合并磁盘分区、建立可移动的用户根目录——重装系统后我会按这套流程把环境重建一遍。
 image: cover-01.png
 tags: 
