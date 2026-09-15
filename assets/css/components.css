@@ -475,97 +475,116 @@
 /* 个人卡片样式已随「关于我」卡片一起移除 */
 
 /* ---------- 词条页横幅（分类 / 标签）----------
-   标题、描述、篇数全部压在图上，不再另外叠一张列表头卡片。
-   图给到 280px 高，比之前分离时的 200px 露出更多画面。
-   底部渐变遮罩保证白字在亮图上也可读。 */
+   结构：模糊底图（氛围） + 遮罩 + 内容（圆形原图 + 标题/描述/篇数）。
+
+   为什么不用「整张图 cover 当横幅」：
+   站内的分类图是方图或竖构图（500x500 / 753x1024），
+   而横幅是 3.71:1 的横条。cover 要裁掉约 80% 的高度，
+   只剩一条横切条，图的构图会被毁——无论从顶部还是居中取景都一样。
+   改成模糊底 + 圆形原图后，任意长宽比的图都能完整呈现。 */
 .term-banner {
   position: relative;
   margin-bottom: var(--card-gap);
   border-radius: var(--card-radius);
   overflow: hidden;
   box-shadow: var(--card-shadow);
-  background: #6b7280;
+  background: #3a4048;
+  color: #fff;
 }
 
-.term-banner-img {
-  display: block;
-  width: 100%;
-  height: 280px;
-  object-fit: cover;
-  /* 从顶部开始取景。cover 默认垂直居中，会把画面中心当裁剪基准，
-     图的上半部（通常是主体所在）被切掉，看起来像「遮挡了画面中心」。
-     靠上对齐后，图上缘与容器上缘一致，读起来是「从上往下显示」。 */
-  object-position: center top;
+/* 模糊底图：同一张图放大 + 重模糊，提供分类色与氛围 */
+.term-banner-bg {
+  position: absolute;
+  inset: -12%;
+  background-image: var(--term-img);
+  background-size: cover;
+  background-position: center;
+  filter: blur(26px) saturate(1.15);
+  transform: scale(1.12);
 }
 
-.term-banner::after {
-  content: "";
+/* 遮罩：压暗以保证白字可读，同时让不同亮度的原图表现一致 */
+.term-banner-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgb(0 0 0 / 8%) 0%,
-    rgb(0 0 0 / 20%) 45%,
-    rgb(0 0 0 / 68%) 100%
-  );
+  background:
+    linear-gradient(180deg, rgb(18 22 28 / 52%) 0%, rgb(18 22 28 / 66%) 100%),
+    linear-gradient(90deg, rgb(18 22 28 / 30%) 0%, rgb(18 22 28 / 8%) 62%);
 }
 
 .term-banner-body {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   z-index: 1;
-  padding: 20px 24px;
-  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 168px;
+  padding: 22px 26px;
+}
+
+/* 原图圆形完整呈现，不裁剪 */
+.term-banner-avatar {
+  flex: 0 0 auto;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: rgb(255 255 255 / 8%);
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 22%), 0 6px 20px -6px rgb(0 0 0 / 55%);
+}
+
+.term-banner-text {
+  min-width: 0;
 }
 
 .term-banner-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 0 0 6px;
+  margin: 0 0 5px;
   color: #fff;
-  font-size: 27px;
+  font-size: 26px;
   font-weight: 700;
   letter-spacing: 0.5px;
   line-height: 1.25;
-  text-shadow: 0 2px 10px rgb(0 0 0 / 55%);
+  text-shadow: 0 2px 10px rgb(0 0 0 / 45%);
 }
 
 .term-banner-title .icon {
   width: 1em;
   height: 1em;
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 .term-banner-desc {
   margin: 0 0 4px;
-  max-width: 60ch;
+  max-width: 62ch;
   font-size: 13.5px;
-  line-height: 1.65;
-  color: rgb(255 255 255 / 88%);
-  text-shadow: 0 1px 8px rgb(0 0 0 / 55%);
+  line-height: 1.6;
+  color: rgb(255 255 255 / 86%);
 }
 
 .term-banner-count {
   margin: 0;
   font-size: 12.5px;
-  color: rgb(255 255 255 / 72%);
+  color: rgb(255 255 255 / 68%);
   font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 768px) {
-  .term-banner-img {
-    height: 200px;
+  .term-banner-body {
+    gap: 14px;
+    min-height: 0;
+    padding: 16px 18px;
   }
 
-  .term-banner-body {
-    padding: 14px 16px;
+  .term-banner-avatar {
+    width: 64px;
+    height: 64px;
   }
 
   .term-banner-title {
-    font-size: 21px;
+    font-size: 20px;
   }
 
   .term-banner-desc {
