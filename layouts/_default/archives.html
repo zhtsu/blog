@@ -22,22 +22,22 @@
       <h2 class="archive-year">{{ .Key }} 年 <span class="badge">{{ len .Pages }}</span></h2>
       <ul class="archive-list">
         {{- range .Pages }}
-        {{- /* 推荐标记沿用文章卡片那套：金黄五角星 + 同色系文字。
-             归档是紧凑的一行式列表，这里只放一枚小星，不重复「推荐文章」四个字，
-             否则每行都被撑长、时间线就散了。 */ -}}
+        {{- /* 推荐行的设计：
+             不再把一枚孤立的小星挂在标题后面（那看起来像补上去的），
+             而是给整行一条金色左强调条 + 一枚「推荐」小胶囊，
+             让这一行本身成为一个有边界的视觉单元，扫列表时先看到它。
+             星形路径内联并显式 fill：内联可避免 <use> 的 shadow tree
+             继承问题，fill 属性 + CSS 各兜一层。 */ -}}
         {{- $isRec := in .Params.tags (partial "rec-tag-name.html" .) }}
         <li class="archive-item{{ if $isRec }} is-rec{{ end }}">
           <span class="archive-date">{{ .Date.Format "01-02" }}</span>
           <a class="archive-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
           {{- if $isRec }}
-          {{- /* 直接内联路径，并同时给出 fill 属性与 CSS 兜底：
-               <use> 引用 sprite 会走 shadow tree，填充依赖 currentColor 继承，
-               而这一行的 color 是默认文字色，没有金色兜底，星形可能落成无色。
-               这里 fill 属性写在元素上，CSS 再覆盖一层，两条路都保证有金色。 */ -}}
-          <svg class="archive-star" viewBox="0 0 24 24" role="img" aria-label="推荐文章" fill="#f0ad14">
-            <title>推荐文章</title>
-            <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/>
-          </svg>
+          <span class="archive-rec">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="#f0ad14">
+              <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/>
+            </svg>推荐
+          </span>
           {{- end }}
         </li>
         {{- end }}
