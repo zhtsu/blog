@@ -2,7 +2,7 @@
 name: Deploy Hugo site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # 站点由 latest 分支构建并发布到 GitHub Pages
   push:
     branches:
       - latest
