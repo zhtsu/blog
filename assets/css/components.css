@@ -771,33 +771,29 @@
 }
 
 /* ---------- 归档里的推荐行 ----------
-   只保留行尾的「★ 推荐文章」胶囊，与文章卡片、详情页完全同一套写法。
-   刻意不加左侧强调条、不改分隔线颜色：
-   归档本身已经是一列安静的时间线，一枚胶囊足够定位，多了反而吵。 */
+   推荐行只在标题后面跟一枚「★ 推荐文章」胶囊，
+   与文章卡片、详情页同一套写法与配色。
+   刻意不做左侧强调条、不改分隔线颜色：
+   归档本身已经是一列安静的时间线，一枚胶囊足够定位，多了反而吵。
+
+   布局：胶囊紧跟在标题文字之后（不是推到行尾），
+   所以标题按内容宽度收缩、并在需要时换行；
+   min-width:0 保证窄屏下长标题不会把胶囊挤出卡片。 */
 .archive-item.is-rec .archive-link {
   font-weight: 600;
   color: var(--heading);
 }
 
-/* 归档行是紧凑单行，胶囊顶到行尾，让两枚在时间线上对齐成一列。
-   标题给 flex:1 1 auto + min-width:0：窄屏下长标题正常换行，
-   不会把胶囊挤出卡片右侧。 */
 .archive-item .archive-link {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
 }
 
 .archive-item .tag-chip-rec {
   flex: 0 0 auto;
   align-self: center;
-  margin-left: auto;
   padding-left: 6px;
   border-radius: 3px;
-}
-
-.archive-item.is-rec .archive-link {
-  font-weight: 600;
-  color: var(--heading);
 }
 
 /* ---------- 404 ---------- */
