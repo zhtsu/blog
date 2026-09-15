@@ -98,6 +98,9 @@
   height: 100%;
   min-height: 152px;
   object-fit: cover;
+  /* 从顶部开始取景：cover 默认垂直居中，会把图的上半部裁掉，
+     而封面图的重点通常在顶部 */
+  object-position: center top;
   display: block;
   transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -488,6 +491,10 @@
   width: 100%;
   height: 280px;
   object-fit: cover;
+  /* 从顶部开始取景。cover 默认垂直居中，会把画面中心当裁剪基准，
+     图的上半部（通常是主体所在）被切掉，看起来像「遮挡了画面中心」。
+     靠上对齐后，图上缘与容器上缘一致，读起来是「从上往下显示」。 */
+  object-position: center top;
 }
 
 .term-banner::after {
@@ -760,6 +767,22 @@
 
 .archive-link:hover {
   color: var(--accent);
+}
+
+/* 推荐标记：与文章卡片同一套金黄配色，但这里只放五角星。
+   归档是单行紧凑列表，加上「推荐文章」四个字会把每行撑长、时间线变散。 */
+.archive-star {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 13px;
+  height: 13px;
+  margin-left: 6px;
+  fill: #f0ad14;
+}
+
+.archive-item.is-rec .archive-link {
+  font-weight: 600;
+  color: var(--heading);
 }
 
 /* ---------- 404 ---------- */

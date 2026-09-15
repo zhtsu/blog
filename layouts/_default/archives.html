@@ -22,9 +22,16 @@
       <h2 class="archive-year">{{ .Key }} 年 <span class="badge">{{ len .Pages }}</span></h2>
       <ul class="archive-list">
         {{- range .Pages }}
-        <li class="archive-item">
+        {{- /* 推荐标记沿用文章卡片那套：金黄五角星 + 同色系文字。
+             归档是紧凑的一行式列表，这里只放一枚小星，不重复「推荐文章」四个字，
+             否则每行都被撑长、时间线就散了。 */ -}}
+        {{- $isRec := in .Params.tags (partial "rec-tag-name.html" .) }}
+        <li class="archive-item{{ if $isRec }} is-rec{{ end }}">
           <span class="archive-date">{{ .Date.Format "01-02" }}</span>
           <a class="archive-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
+          {{- if $isRec }}
+          <svg class="archive-star" role="img" aria-label="推荐文章" title="推荐文章"><use href="#i-star-fill"></use></svg>
+          {{- end }}
         </li>
         {{- end }}
       </ul>
