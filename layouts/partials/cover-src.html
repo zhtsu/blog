@@ -28,13 +28,14 @@
   {{- else -}}
     {{- with $page.Resources.GetMatch $name -}}
       {{- $img := . -}}
-      {{- if in (slice "image" "images") .ResourceType -}}
+      {{- if partial "img-convertible.html" (dict "resource" .) -}}
         {{- $o1 := $img -}}
         {{- $o2 := $img -}}
         {{- /* 一律转 WebP，宽度只缩不放。
              目标比原图宽时（例如详情页要 960，而封面只有 640 宽），
              仍按原宽转 WebP——否则会退回原始 PNG，
-             实测 640x360 的 cover-05.png 就是这样漏过处理的。 */ -}}
+             实测 640x360 的 cover-05.png 就是这样漏过处理的。
+             动图（GIF/APNG）除外，转 WebP 会丢动画，见 img-convertible.html。 */ -}}
         {{- if ge $img.Width $w1 -}}
           {{- $o1 = $img.Resize (printf "%dx webp q%d" $w1 $q) -}}
         {{- else -}}
@@ -50,7 +51,7 @@
           {{- $srcset = printf "%s 1x, %s 2x" $o1.RelPermalink $o2.RelPermalink -}}
         {{- end -}}
       {{- else -}}
-        {{- /* 非图片资源或无法处理，回退原地址 */ -}}
+        {{- /* 非图片资源、动图（GIF/APNG）或无法处理，回退原地址 */ -}}
         {{- $src = $img.RelPermalink -}}
       {{- end -}}
     {{- end -}}

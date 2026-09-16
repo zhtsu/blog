@@ -154,7 +154,86 @@ slug: game-engine-notes        # ← 决定 URL，只用小写字母、数字、
 - 正文插图一律加 `loading="lazy"`，不阻塞首屏。
 - **外链图片原样保留**，不处理（拿不到文件）。
 - 处理失败时回退原图，不会让构建挂掉。
-- **GIF 动图不转 WebP**（会丢动画），保持原文件。
+- **GIF / APNG 动图不转 WebP**（Hugo 只保留第一帧，动画会丢），原样引用原文件。
+  判定规则集中在 `partials/img-convertible.html`，上面三个处理入口都走它，
+  以后要放行/挡住别的格式只改这一处。
+- **单张图片可以按需保持原样**：`{.raw}` 或 front matter 的 `keepOriginal`，见下节。
+
+### 单张图片保持原样：`{.raw}` / `keepOriginal`
+
+默认所有正文插图都会转 WebP + 缩放。想让某张图**保持原文件**（不转格式、不缩放），
+两种写法，效果完全一样：
+
+**写法一：图旁边标 `{.raw}`（推荐）** —— 属性列表必须单独放在图片的**下一行**：
+
+```markdown
+![我的动画](horn.gif)
+{.raw}
+```
+
+**写法二：front matter 列表** —— 图片在表格里、或想集中管理时用：
+
+```yaml
+keepOriginal:
+    - horn.gif
+    - elf.png
+```
+
+```markdown
+| ![在表格里](horn.gif) |
+| --- |
+```
+
+实测的几条边界（都踩过）：
+
+- **属性列表只能放下一行，且图片必须独立成行。** 写成
+  `前文 ![图](b.png){.raw} 后文` 不会生效，而且 `{.raw}` 会**原样显示在页面上**。
+- **表格单元格里的图片收不到属性列表**：`| ![图](c.png){.raw} |` 会被静默忽略
+  （连字面量都不剩）。表格里的图请用 `keepOriginal`。
+- `keepOriginal` 里写了、但 page bundle 里找不到的条目会打印**构建警告**
+  （拼错文件名、图片改过名都靠它兜底），不会静默地"照常压缩"。
+- 这规则只管**正文插图**。封面（front matter 的 `image:`）不走渲染钩子，
+  依旧按封面尺寸压缩。
+- 「原样」指的是**文件**原样，不是按原尺寸铺满页面：排版宽度仍按 `img1x`
+  （默认 1040）封顶、宽高按比例算。像素画那篇的 `elf.png` 是 640px 的 2x 图，
+  仍然按 320px 排版——不封顶它会以两倍宽把表格撑开。
+  读者右键存下来 / 新窗口打开拿到的仍是原文件。
+- 效果可自证：产物里那张图的 `src` 直接指向原文件（如 `/p/xxx/horn.gif`），
+  且不会为它生成任何 `*_resize_*.webp`。
+
+> 写法一依赖 `config/_default/markup.toml` 里的
+> `wrapStandAloneImageWithinParagraph = false`：不开这项，属性列表会挂到
+> 外包的 `<p>` 上，渲染钩子只能收到空 map。全站影响已核对——
+> 只有独立成行的图片少了一层多余的 `<p>` 包裹，间距不变
+> （`p` 的 `margin: 0 0 1em` 本来就小于 `img` 的 `margin: 1.2em auto`，
+> 折叠后取大者，包不包都是 `1.2em`）。
+
+### 像素画页面：`pixelArt` + `img1x`
+
+像素画的"细节"就是一个个色块，平滑插值会把它们糊成渐变色，
+所以这类页面要多两个参数（见 `content/post/pixel-art-pkg-01/index.md`，
+那篇同时还用 `keepOriginal` 把 6 张 sprite 的 PNG 原样留着）：
+
+```yaml
+pixelArt: true   # 正文插图加 .img-pixel 类 → image-rendering: pixelated（最近邻缩放）
+img1x: 320       # 插图按 1x=320 / 2x=640 生成，并写 width="320" 排版
+```
+
+- `pixelArt` 只管渲染质量：高分屏把 320px 的 sprite 放大时，色块边缘保持硬边。
+  代价是缩放到非整数倍时色块宽窄会略微不均——比糊掉好。
+  封面不走渲染钩子（它由 `cover-src.html` 处理），所以大封面仍走平滑缩放。
+- `img1x` 管排版宽度，顺带输出 `width`/`height`（浏览器能提前留位）。
+  于是 640px 的 `elf.png` 显示成 320px、高分屏仍取 640 的 2x 图——
+  比它原来那句 `<img src="elf.png" style="zoom:50%">` 更好：
+  裸 HTML 完全绕过渲染钩子，图片既不会被压缩、也没有 2x 档。
+- 宽度**只缩不放**，250px 的图配 `img1x: 320` 依然是 250px。
+
+> 两个实测结论，别再走弯路：
+> 1. 本版 Hugo 上 `Resize "… webp lossless"` **不生效**——不报错，但产物仍是
+>    有损 VP8（文件名里退回默认 `q75`）。像素画要真正无损只能留 PNG。
+> 2. 像素画转 q80 有损 WebP 不一定变小：`overlord.png` 1637 → 2074 字节
+>    （调色板 PNG 本来就压得很好，WebP 头开销反而更大）。其余几张是变小的
+>    （`elf.png` 4568 → 320px 4014 / 640px 5524 字节）。
 
 ### 实际收益
 
@@ -166,7 +245,7 @@ slug: game-engine-notes        # ← 决定 URL，只用小写字母、数字、
 全站去重后            1.08 MB
 ```
 
-### 两个容易踩的坑（都已修）
+### 三个容易踩的坑（都已修）
 
 1. **`gt` 与 `ge`**：判断「原图是否够大」必须用 `ge`。
    封面原宽 1920、2x 目标也是 1920 时，`gt` 为假会退回原始 PNG。
@@ -174,6 +253,14 @@ slug: game-engine-notes        # ← 决定 URL，只用小写字母、数字、
    （`python%E5%AE%89...`），直接拿去 `Resources.GetMatch` 匹配不到，
    会**静默**回退原图、且构建不报错。渲染钩子里先用 `urls.Parse`
    取 `.Path` 再匹配。
+   同一种坑还有 `![图](./x.png)`：`.Path` 是 `./x.png`，也匹配不到 `x.png`。
+   所以取到 `.Path` 之后还要 `path.Clean` 归一化一次（现在两种写法都正常）。
+3. **动图转 WebP 会丢动画**：GIF/APNG 走 `Resize "… webp"` 只出第一帧。
+   像素画合集（一）那篇的 3 张 GIF 一度被压成静态图——
+   `horn.gif` 320×320、321 帧、78KB，产物是 3.1KB 的静态 WebP，
+   动画整个消失；而构建成功、图片也能 200，光看构建日志发现不了。
+   判定统一收在 `partials/img-convertible.html`：动图（以及不能让
+   Hugo 栅格化的 SVG）原样输出，其余照旧转 WebP。
 
 > 构建产物 `public/` 里仍保留一份未被引用的原图——Hugo 会复制 page bundle
 > 的全部文件。**访客不会下载它们**，只影响发布产物体积。
@@ -201,6 +288,9 @@ front matter 可用字段：
 | `date` | date | 发布日期 |
 | `lastmod` | date | 与 `date` 不同时会额外显示"最后更新" |
 | `image` | string | 封面图，填同目录下的文件名（如 `cover-07.png`），也支持外链 |
+| `pixelArt` | bool | 像素画页面：正文插图按原生像素渲染，高分屏放大不糊色块 |
+| `img1x` | int | 正文插图 1x 目标宽（默认 1040，2x 取其两倍），并据此写 `width`/`height` |
+| `keepOriginal` | array | 这些正文插图保持原文件、不压缩（表格里的图只能用这个写法） |
 | `categories` | array | 分类，生成 `/categories/xxx/` |
 | `tags` | array | 标签，生成 `/tags/xxx/` |
 | `pinned` | bool | 置顶：卡片上显示角标 |

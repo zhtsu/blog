@@ -151,6 +151,14 @@
   box-shadow: var(--shadow);
 }
 
+/* 像素画插图（front matter: pixelArt: true）
+   缩放时用最近邻插值，不做平滑。像素画的"细节"就是一个个色块，
+   平滑插值会把它们糊成渐变色——高分屏把 320px 的 sprite 放大时最明显。
+   代价是放大到非整数倍时色块宽窄会略微不均，比糊掉好。 */
+.post-content img.img-pixel {
+  image-rendering: pixelated;
+}
+
 /* 表格：小屏可横向滚动 */
 .post-content table {
   display: block;

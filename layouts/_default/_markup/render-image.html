@@ -4,6 +4,9 @@
        1. 构建期缩放 + 转 WebP。正文最大宽度是 #main 的 1040px，
           而站内插图大量是 1920 宽的 PNG（Python 教程那篇单张可达 1MB），
           直接加载既拖慢首屏也浪费流量。
+          例外：动图（GIF/APNG）不转——Hugo 转出来的 WebP 只有第一帧，
+          动画会丢（像素画合集那篇的 3 张 GIF 就是这样被压成静态图的）。
+          这类资源原样引用，具体规则见 partials/img-convertible.html。
        2. 加 loading="lazy" 与 decoding="async"，
           正文图片默认不该阻塞首屏渲染。
        3. 有 alt 就保留，没有则留空（空 alt 表示装饰性图片，可访问性正确）。
@@ -12,13 +15,40 @@
        取不到（外链或路径异常）时原样输出，不让构建失败。
 
        宽度策略：1x 用 1040（正文容器上限），2x 用 1920（高分屏）。
-       只缩不放——原图更小时直接用原图。 */ -}}
+       只缩不放——原图更小时直接用原图。
+
+       两个可选的页面级参数（front matter，见 README「图片会在构建期自动处理」）：
+       - img1x：改写 1x/2x 目标宽度（默认 1040 / 1920）。窄插图可以调小。
+         设了它就顺带输出 width/height，让图片按这个宽度排版而不是铺满整行。
+       - pixelArt：像素画页面。插图按原生像素渲染（image-rendering: pixelated），
+         高分屏放大时色块边缘不被平滑插值糊掉，见 assets/css/content.css 的 .img-pixel。
+
+       单张图片想「保持原样、不压缩」时，两种写法（都走下面的 $keep）：
+       - 独立成行的图片，下一行写 {.raw}；
+       - 或写在 front matter 的 keepOriginal 列表里（表格里的图只能用这个，
+         因为表格单元格收不到属性列表，{.raw} 会被静默忽略）。 */ -}}
 {{- $dest := .Destination -}}
 {{- $alt := .Text -}}
 {{- $title := .Title -}}
 {{- $page := .Page -}}
 {{- $src := $dest -}}
 {{- $srcset := "" -}}
+{{- $dim := "" -}}
+{{- $w1 := 1040 -}}
+{{- $w2 := 1920 -}}
+{{- $pixel := false -}}
+{{- $hasW1 := false -}}
+{{- $keep := false -}}
+{{- $keepList := slice -}}
+{{- with $page -}}
+  {{- with .Params.img1x -}}
+    {{- $w1 = . -}}
+    {{- $w2 = mul . 2 -}}
+    {{- $hasW1 = true -}}
+  {{- end -}}
+  {{- $pixel = .Params.pixelArt | default false -}}
+  {{- $keepList = .Params.keepOriginal | default slice -}}
+{{- end -}}
 
 {{- /* 中文文件名在 .Destination 里是 percent-encoded（如 python%E5%AE%89...），
        而资源名是原始中文，必须解码后 GetMatch 才匹配得到。
@@ -30,10 +60,37 @@
     {{- $decoded = . -}}
   {{- end -}}
 {{- end -}}
+{{- /* 再归一化一次路径：写 `![图](./x.png)` 时 .Path 是 "./x.png"，
+       Resources.GetMatch 匹配不到资源名 "x.png"，于是静默退回原图
+       ——不压缩、不报错，和第 2 条同一种坑。站内现在没人这么写，
+       但顺手堵上，也让 keepOriginal 对 `./` 写法一样有效。 */ -}}
+{{- $decoded = path.Clean $decoded -}}
 
+{{- /* 写法一：属性列表里的 raw 类（`.Attributes` 来自 markup.toml 打开的
+       wrapStandAloneImageWithinParagraph，只有独立成行的图片才收得到）。
+       写法二：front matter 的 keepOriginal 列表，按「原文里写的文件名」匹配，
+       解码后的路径也匹配一次（中文文件名在 .Destination 里是编码过的）。 */ -}}
+{{- with .Attributes -}}
+  {{- with .class -}}
+    {{- if in (split . " ") "raw" -}}{{- $keep = true -}}{{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if or (in $keepList $dest) (in $keepList $decoded) -}}{{- $keep = true -}}{{- end -}}
+
+{{- /* keepOriginal 里写了、但 page bundle 里找不到的条目要吼一声：
+       否则拼错文件名只会静默地「照常压缩」，跟没写一样。
+       用 page.Store 保证每页只检查一次，不随图片数量重复刷屏。 */ -}}
+{{- if and $keepList $page (not ($page.Store.Get "keepOriginalChecked")) -}}
+  {{- $page.Store.Set "keepOriginalChecked" true -}}
+  {{- range $keepList -}}
+    {{- if not ($page.Resources.GetMatch .) -}}
+      {{- warnf "keepOriginal: %q 在 %s 的 page bundle 里找不到对应图片（拼写错了？文件名改过？）" . ($page.File.Path | default $page.Title) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
 {{- if and $page (not (hasPrefix $dest "http")) (not (hasPrefix $dest "data:")) -}}
   {{- with $page.Resources.GetMatch $decoded -}}
-    {{- if in (slice "image" "images") .ResourceType -}}
+    {{- if and (partial "img-convertible.html" (dict "resource" .)) (not $keep) -}}
       {{- $img := . -}}
       {{- $o1 := $img -}}
       {{- $o2 := $img -}}
@@ -41,13 +98,13 @@
            宽度只缩不放：目标比原图宽时保留原宽度，避免放大糊掉。
            注：0.108 没有 $img.Process，用 Resize 指定与原图相同的宽度即可
            只做格式转换。 */ -}}
-      {{- if ge $img.Width 1040 -}}
-        {{- $o1 = $img.Resize "1040x webp q80" -}}
+      {{- if ge $img.Width $w1 -}}
+        {{- $o1 = $img.Resize (printf "%dx webp q80" $w1) -}}
       {{- else -}}
         {{- $o1 = $img.Resize (printf "%dx webp q80" $img.Width) -}}
       {{- end -}}
-      {{- if ge $img.Width 1920 -}}
-        {{- $o2 = $img.Resize "1920x webp q80" -}}
+      {{- if ge $img.Width $w2 -}}
+        {{- $o2 = $img.Resize (printf "%dx webp q80" $w2) -}}
       {{- else -}}
         {{- $o2 = $img.Resize (printf "%dx webp q80" $img.Width) -}}
       {{- end -}}
@@ -55,12 +112,44 @@
       {{- if ne $o1.RelPermalink $o2.RelPermalink -}}
         {{- $srcset = printf "%s 1x, %s 2x" $o1.RelPermalink $o2.RelPermalink -}}
       {{- end -}}
+      {{- /* 设了 img1x 才写 width/height：既是排版宽度，也让浏览器提前留位。
+           以 1x 产物为准（2x 只用于高分屏，不影响布局尺寸）。 */ -}}
+      {{- if $hasW1 -}}
+        {{- $dim = printf `width="%d" height="%d"` $o1.Width $o1.Height -}}
+      {{- end -}}
+    {{- else -}}
+      {{- /* 不处理的资源直接指向原文件，两条路都走这里：
+           1. 动图（GIF/APNG）等不能转格式的——不转 WebP 是为了保住动画
+              （Hugo 只会留第一帧），不缩放是为了保住像素（插值重采样会糊）。
+           2. 作者标了「保持原样」的（{.raw} 或 keepOriginal，即 $keep）。
+              为什么允许：像素画、截图、要给人下载的原图等，
+              压过之后就不是原文件了。
+           指向 .RelPermalink 而不是原文里的 $dest，避免相对路径
+           在子路径部署下解析错位。 */ -}}
+      {{- $src = .RelPermalink -}}
+      {{- /* 排版宽度按 1x 目标（img1x，默认 1040）封顶，宽高按比例算。
+           原样输出不等于「按原尺寸铺在页面上」：.post-content img 没有
+           max-width，640px 的 elf.png 会以两倍宽把表格撑开，
+           1920px 的原图更会直接撑破正文栏。裁的是排版尺寸，文件仍是原文件
+           （读者右键存下来/新窗口打开拿到的就是原图）。
+           SVG 没有像素尺寸（Width 为 0），跳过。 */ -}}
+      {{- if gt .Width 0 -}}
+        {{- $dw := .Width -}}
+        {{- $dh := .Height -}}
+        {{- if gt $dw $w1 -}}
+          {{- $dw = $w1 -}}
+          {{- $dh = int (div (mul .Height $w1) .Width) -}}
+        {{- end -}}
+        {{- $dim = printf `width="%d" height="%d"` $dw $dh -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
 
 <img src="{{ $src }}"
-     {{- with $srcset }} srcset="{{ . }}" sizes="(max-width: 1040px) 100vw, 1040px"{{ end }}
+     {{- with $srcset }} srcset="{{ . }}" sizes="(max-width: {{ $w1 }}px) 100vw, {{ $w1 }}px"{{ end }}
+     {{- with $dim }} {{ . | safeHTMLAttr }}{{ end }}
      alt="{{ $alt }}"
      {{- with $title }} title="{{ . }}"{{ end }}
+     {{- if $pixel }} class="img-pixel"{{ end }}
      loading="lazy" decoding="async">

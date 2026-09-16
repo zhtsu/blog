@@ -1,0 +1,33 @@
+{{- /* 判断一个图片资源能否安全地「缩放 + 转 WebP」。
+
+       存在的理由：站点为了首屏体积，把正文插图和封面一律转成 WebP
+       （见 render-image.html / cover-src.html / term-cover.html）。
+       但有一类图不能转——动图。
+
+       Hugo 的 .Resize 处理动图时只保留第一帧，输出的是静态 WebP：
+       实测 horn.gif（320x320、321 帧、78KB）被转成 3.1KB 的静态 WebP，
+       页面上动画直接没了。像素画动图本身就是要展示动画的，
+       所以 GIF / APNG 一律原样输出，不缩放也不转格式。
+
+       顺带挡住 SVG：矢量图没有像素尺寸，Hugo 无法栅格化处理，
+       放进来只会在构建时炸掉。
+
+       参数：resource（图片资源，可为 nil）
+       返回：bool，true = 可以处理，false = 必须原样输出。 */ -}}
+{{- $ok := false -}}
+{{- with .resource -}}
+  {{- if in (slice "image" "images") .ResourceType -}}
+    {{- $sub := "" -}}
+    {{- with .MediaType -}}
+      {{- $sub = lower .SubType -}}
+    {{- end -}}
+    {{- /* gif / apng 是动图（注意：PNG 里塞的 APNG 会被识别成 png，
+           这种探测不出来，只能靠后缀 .apng） */ -}}
+    {{- $animated := in (slice "gif" "apng") $sub -}}
+    {{- $vector := eq $sub "svg" -}}
+    {{- $ok = not (or $animated $vector) -}}
+    {{- /* 已知限制：动图 WebP（ANIM 块）检测不出来，会被当成静态 WebP
+           重采样而丢掉动画。站内没有这种素材；真要放，就补进上面的列表。 */ -}}
+  {{- end -}}
+{{- end -}}
+{{- return $ok -}}

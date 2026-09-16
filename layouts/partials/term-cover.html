@@ -23,9 +23,10 @@
     {{- with $page.Resources.GetMatch $name -}}
       {{- /* 分类头图在卡片里显示 208x208（移动端 124），按 2x 出 416px 足够。
            原图是 500x500 或 753x1024，直接加载明显偏大。
-           处理失败或原图更小时回退原资源。 */ -}}
+           处理失败、动图（GIF/APNG）或原图更小时回退原资源，
+           见 img-convertible.html。 */ -}}
       {{- $thumb = .RelPermalink -}}
-      {{- if and (in (slice "image" "images") .ResourceType) (gt .Width 416) -}}
+      {{- if and (partial "img-convertible.html" (dict "resource" .)) (gt .Width 416) -}}
         {{- $thumb = (.Resize "416x webp q82").RelPermalink -}}
       {{- end -}}
     {{- end -}}

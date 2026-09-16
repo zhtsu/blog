@@ -6,6 +6,17 @@
   [goldmark.parser]
     autoHeadingID = true
     autoHeadingIDType = "github"
+    wrapStandAloneImageWithinParagraph = false
+    # ↑ 让「独立成行的图片」的属性列表挂在 <img> 上，而不是外包的那层 <p> 上。
+    # 渲染钩子只能读到 <img> 自己的属性：不开这项的话，正文里写
+    #   ![alt](x.png)
+    #   {.raw}
+    # 会被挂到 <p> 上，钩子收到空 map，而且不报任何错（实测过）。
+    #
+    # 副作用只有一处：独立图片不再被 <p> 包一层。间距不变——
+    # p 只有 margin-bottom（base.css: margin: 0 0 1em），与 img 自己的
+    # margin: 1.2em auto 折叠后取大者，包不包都是 1.2em；图片恰好是正文
+    # 第一个元素时反而少一段多余留白（.post-content > :first-child 归零）。
   [goldmark.parser.attribute]
     block = true
     title = true
