@@ -31,20 +31,19 @@
       {{- if in (slice "image" "images") .ResourceType -}}
         {{- $o1 := $img -}}
         {{- $o2 := $img -}}
-        {{- /* 只要原图不小于目标宽度就重新编码。
-             注意比较用的是 >=：目标尺寸等于原图时也必须处理，
-             否则 srcset 的 2x 会落回原始 PNG
-             （实测 cover-07.png 是 1920 宽的 1MB PNG，
-              而 2x 目标也是 1920，用 > 判断会直接引用原图）。 */ -}}
+        {{- /* 一律转 WebP，宽度只缩不放。
+             目标比原图宽时（例如详情页要 960，而封面只有 640 宽），
+             仍按原宽转 WebP——否则会退回原始 PNG，
+             实测 640x360 的 cover-05.png 就是这样漏过处理的。 */ -}}
         {{- if ge $img.Width $w1 -}}
           {{- $o1 = $img.Resize (printf "%dx webp q%d" $w1 $q) -}}
         {{- else -}}
-          {{- $o1 = $img -}}
+          {{- $o1 = $img.Resize (printf "%dx webp q%d" $img.Width $q) -}}
         {{- end -}}
         {{- if ge $img.Width $w2 -}}
           {{- $o2 = $img.Resize (printf "%dx webp q%d" $w2 $q) -}}
         {{- else -}}
-          {{- $o2 = $img -}}
+          {{- $o2 = $img.Resize (printf "%dx webp q%d" $img.Width $q) -}}
         {{- end -}}
         {{- $src = $o1.RelPermalink -}}
         {{- if ne $o1.RelPermalink $o2.RelPermalink -}}
