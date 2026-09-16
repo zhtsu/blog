@@ -7,7 +7,9 @@
 {{- $page := .page -}}
 {{- $showSummary := .showSummary | default true -}}
 {{- $h := .headingLevel | default 2 -}}
-{{- $cover := partial "cover-src.html" $page -}}
+{{- /* 卡片封面展示宽 228px（见 .post-card 的 grid 列宽），
+       按 2x 出 456px 的图即可，不必用 1920px 原图。 */ -}}
+{{- $cover := partial "cover-src.html" (dict "page" $page "width" 240 "width2x" 480) -}}
 
 {{- /* 取第一个分类的配色，作为卡片强调色。
        直接 index 分类名在某些情况下取不到（键名大小写/空白差异），
@@ -26,11 +28,13 @@
     {{- end -}}
   {{- end -}}
 {{- end -}}
-<article class="post-card{{ if $cover }} has-cover{{ end }}"{{ with $accent }} style="--accent: {{ . }}"{{ end }}>
+<article class="post-card{{ if $cover.src }} has-cover{{ end }}"{{ with $accent }} style="--accent: {{ . }}"{{ end }}>
 
-  {{- if and $cover site.Params.showCover }}
+  {{- if and $cover.src site.Params.showCover }}
   <a class="post-card-cover" href="{{ $page.RelPermalink }}" tabindex="-1" aria-hidden="true">
-    <img src="{{ $cover }}" alt="" loading="lazy" decoding="async">
+    <img src="{{ $cover.src }}"
+         {{- with $cover.srcset }} srcset="{{ . }}" sizes="228px"{{ end }}
+         alt="" loading="lazy" decoding="async">
   </a>
   {{- end }}
 

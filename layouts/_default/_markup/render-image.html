@@ -1,0 +1,66 @@
+{{- /* Markdown 图片渲染钩子。
+       所有正文插图都经过这里，因此可以统一做三件事：
+
+       1. 构建期缩放 + 转 WebP。正文最大宽度是 #main 的 1040px，
+          而站内插图大量是 1920 宽的 PNG（Python 教程那篇单张可达 1MB），
+          直接加载既拖慢首屏也浪费流量。
+       2. 加 loading="lazy" 与 decoding="async"，
+          正文图片默认不该阻塞首屏渲染。
+       3. 有 alt 就保留，没有则留空（空 alt 表示装饰性图片，可访问性正确）。
+
+       图片来自 page bundle（与 index.md 同目录），用 .Resources.GetMatch 取；
+       取不到（外链或路径异常）时原样输出，不让构建失败。
+
+       宽度策略：1x 用 1040（正文容器上限），2x 用 1920（高分屏）。
+       只缩不放——原图更小时直接用原图。 */ -}}
+{{- $dest := .Destination -}}
+{{- $alt := .Text -}}
+{{- $title := .Title -}}
+{{- $page := .Page -}}
+{{- $src := $dest -}}
+{{- $srcset := "" -}}
+
+{{- /* 中文文件名在 .Destination 里是 percent-encoded（如 python%E5%AE%89...），
+       而资源名是原始中文，必须解码后 GetMatch 才匹配得到。
+       不解码的话会静默回退成原图——实测正是这个原因导致 25 张插图
+       全部没有被缩放。 */ -}}
+{{- $decoded := $dest -}}
+{{- with urls.Parse $dest -}}
+  {{- with .Path -}}
+    {{- $decoded = . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if and $page (not (hasPrefix $dest "http")) (not (hasPrefix $dest "data:")) -}}
+  {{- with $page.Resources.GetMatch $decoded -}}
+    {{- if in (slice "image" "images") .ResourceType -}}
+      {{- $img := . -}}
+      {{- $o1 := $img -}}
+      {{- $o2 := $img -}}
+      {{- /* 一律转 WebP（同尺寸转换也能省一半以上，实测 PNG 8.5KB→WebP 1.8KB），
+           宽度只缩不放：目标比原图宽时保留原宽度，避免放大糊掉。
+           注：0.108 没有 $img.Process，用 Resize 指定与原图相同的宽度即可
+           只做格式转换。 */ -}}
+      {{- if ge $img.Width 1040 -}}
+        {{- $o1 = $img.Resize "1040x webp q80" -}}
+      {{- else -}}
+        {{- $o1 = $img.Resize (printf "%dx webp q80" $img.Width) -}}
+      {{- end -}}
+      {{- if ge $img.Width 1920 -}}
+        {{- $o2 = $img.Resize "1920x webp q80" -}}
+      {{- else -}}
+        {{- $o2 = $img.Resize (printf "%dx webp q80" $img.Width) -}}
+      {{- end -}}
+      {{- $src = $o1.RelPermalink -}}
+      {{- if ne $o1.RelPermalink $o2.RelPermalink -}}
+        {{- $srcset = printf "%s 1x, %s 2x" $o1.RelPermalink $o2.RelPermalink -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+<img src="{{ $src }}"
+     {{- with $srcset }} srcset="{{ . }}" sizes="(max-width: 1040px) 100vw, 1040px"{{ end }}
+     alt="{{ $alt }}"
+     {{- with $title }} title="{{ . }}"{{ end }}
+     loading="lazy" decoding="async">

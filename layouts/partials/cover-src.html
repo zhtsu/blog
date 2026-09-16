@@ -1,17 +1,61 @@
-{{- /* 只算封面图地址，返回字符串（给卡片用）。
-       支持两种取值：
-       - 页面资源名：文章是 page bundle，图片与 index.md 同目录
-       - 外链 URL
-       找不到时返回空字符串。 */ -}}
-{{- $name := .Params.image -}}
+{{- /* 解析封面图，并在构建期做尺寸缩放与格式转换。
+       返回 dict：src（1x 地址）、srcset（1x/2x，可能为空）、alt。
+       找不到图时返回空 src 的 dict，调用方判空即可。
+
+       为什么要处理：
+       站内封面原本是 1920x1080 的 PNG，单张最大 4.5MB，9 张合计 17MB，
+       而卡片上只显示 228x152 像素——等于为了几个小图下载十几 MB。
+
+       处理策略：
+       - 页面资源（page bundle 内的图）交给 Hugo 处理
+       - 外链 URL 原样保留，不做处理（拿不到文件）
+       - 处理失败时回退原图，不让构建因为一张图挂掉
+       - 宽度取 2x 与 1x 两档生成 srcset，兼顾高分屏
+
+       参数：page（必填）、width（1x 目标宽，默认 480）、
+             width2x（2x 目标宽，默认 960）、quality（默认 80） */ -}}
+{{- $page := .page -}}
+{{- $w1 := .width | default 480 -}}
+{{- $w2 := .width2x | default 960 -}}
+{{- $q := .quality | default 80 -}}
+{{- $name := $page.Params.image -}}
 {{- $src := "" -}}
+{{- $srcset := "" -}}
+
 {{- if $name -}}
   {{- if or (hasPrefix $name "http://") (hasPrefix $name "https://") -}}
     {{- $src = $name -}}
   {{- else -}}
-    {{- with .Resources.GetMatch $name -}}
-      {{- $src = .RelPermalink -}}
+    {{- with $page.Resources.GetMatch $name -}}
+      {{- $img := . -}}
+      {{- if in (slice "image" "images") .ResourceType -}}
+        {{- $o1 := $img -}}
+        {{- $o2 := $img -}}
+        {{- /* 只要原图不小于目标宽度就重新编码。
+             注意比较用的是 >=：目标尺寸等于原图时也必须处理，
+             否则 srcset 的 2x 会落回原始 PNG
+             （实测 cover-07.png 是 1920 宽的 1MB PNG，
+              而 2x 目标也是 1920，用 > 判断会直接引用原图）。 */ -}}
+        {{- if ge $img.Width $w1 -}}
+          {{- $o1 = $img.Resize (printf "%dx webp q%d" $w1 $q) -}}
+        {{- else -}}
+          {{- $o1 = $img -}}
+        {{- end -}}
+        {{- if ge $img.Width $w2 -}}
+          {{- $o2 = $img.Resize (printf "%dx webp q%d" $w2 $q) -}}
+        {{- else -}}
+          {{- $o2 = $img -}}
+        {{- end -}}
+        {{- $src = $o1.RelPermalink -}}
+        {{- if ne $o1.RelPermalink $o2.RelPermalink -}}
+          {{- $srcset = printf "%s 1x, %s 2x" $o1.RelPermalink $o2.RelPermalink -}}
+        {{- end -}}
+      {{- else -}}
+        {{- /* 非图片资源或无法处理，回退原地址 */ -}}
+        {{- $src = $img.RelPermalink -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
-{{- return $src -}}
+
+{{- return (dict "src" $src "srcset" $srcset "alt" ($page.Title | plainify)) -}}

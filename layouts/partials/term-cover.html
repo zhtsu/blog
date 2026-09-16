@@ -15,16 +15,23 @@
 {{- $name := $page.Params.image -}}
 {{- $desc := partial "page-body.html" $page -}}
 {{- $accent := $page.Params.style.background | default "#4a76a8" -}}
+{{- $thumb := "" -}}
 {{- if $name -}}
-  {{- $src := "" -}}
   {{- if or (hasPrefix $name "http://") (hasPrefix $name "https://") -}}
-    {{- $src = $name -}}
+    {{- $thumb = $name -}}
   {{- else -}}
     {{- with $page.Resources.GetMatch $name -}}
-      {{- $src = .RelPermalink -}}
+      {{- /* 分类头图在卡片里显示 208x208（移动端 124），按 2x 出 416px 足够。
+           原图是 500x500 或 753x1024，直接加载明显偏大。
+           处理失败或原图更小时回退原资源。 */ -}}
+      {{- $thumb = .RelPermalink -}}
+      {{- if and (in (slice "image" "images") .ResourceType) (gt .Width 416) -}}
+        {{- $thumb = (.Resize "416x webp q82").RelPermalink -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
-  {{- with $src -}}
+{{- end -}}
+{{- with $thumb -}}
   <header class="term-banner" style="--term-accent:{{ $accent }}">
     <div class="term-banner-media">
       <img src="{{ . }}" alt="" loading="eager" decoding="async">
@@ -42,5 +49,4 @@
       <p class="term-banner-count">共 {{ len $page.Pages }} 篇</p>
     </div>
   </header>
-  {{- end -}}
 {{- end -}}
